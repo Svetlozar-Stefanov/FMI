@@ -60,10 +60,7 @@ int main()
 			cout << j;
 		}
 
-		if (i != 1)
-		{
-			cout << "\n";
-		}
+		cout << "\n";
 	}
 
 	return 0;

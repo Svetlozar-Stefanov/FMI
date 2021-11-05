@@ -129,7 +129,7 @@ int main()
             }
             else if (distanceFromSecondaryCenter > secondaryCircleRadius)
             {
-                if (y > 0)
+                if (y >= 0)
                 {
                     const double semiCircleRadius = 2.0;
 
