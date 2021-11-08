@@ -24,8 +24,10 @@ int main()
     cin >> x;
 
     bool hasX = false;
-    int index = n / 2;
-    while (index > 0)
+    int start = 0;
+    int end = n;
+    int index = end / 2;
+    while (true)
     {
         if (x == arr[index])
         {
@@ -34,8 +36,9 @@ int main()
         }
         else if (x < arr[index])
         {
-            int temp = index - ((n - index) / 2);
-            if (index == temp)
+            end = index;
+            int temp = start + (end - start) / 2;
+            if (temp == index)
             {
                 break;
             }
@@ -43,8 +46,9 @@ int main()
         }
         else if (x > arr[index])
         {
-            int temp = index + ((n - index) / 2);
-            if (index == temp)
+            start = index;
+            int temp = start + (end - start) / 2;
+            if (temp == index)
             {
                 break;
             }
