@@ -2,22 +2,71 @@
 
 using namespace std;
 
-int minStepsToAim = INT_MAX;
-
-void numberOfStepsToAim(const unsigned n, const unsigned aim) 
+int firstNumAfterTarget(unsigned n, const unsigned target) 
 {
-    
+    while (n < target)
+    {
+        n *= 2;
+    }
+
+    return n;
+}
+
+int stepsToTarget(unsigned startValue, const unsigned target)
+{
+    unsigned steps = 0;
+
+    while (startValue != target)
+    {
+        if (startValue > target)
+        {
+            while (startValue > target)
+            {
+                startValue--;
+                steps++;
+            }
+        }
+        else if (startValue < target)
+        {
+            unsigned multipiledNum = firstNumAfterTarget(startValue, target);
+
+            unsigned subtractedNum = startValue;
+            if (startValue > 1)
+            {
+                subtractedNum -= 1;
+            }
+            subtractedNum = firstNumAfterTarget(subtractedNum, target);
+
+            if (multipiledNum - target <= subtractedNum - target)
+            {
+                startValue *= 2;
+                steps++;
+            }
+            else if (multipiledNum - target > subtractedNum - target)
+            {
+                startValue -= 1;
+                steps++;
+            }
+        }
+    }
+
+    return steps;
 }
 
 int main()
 {
     unsigned n;
-    unsigned aim;
+    unsigned target;
 
-    cin >> n;
-    cin >> aim;
+    if (!(cin >> n) 
+        || n <= 0
+        || !(cin >> target))
+    {
+        cout << "-1";
+        return 1;
+    }
+    
+    cout << stepsToTarget(n, target);
 
-    numberOfStepsToAim(n,aim);
-
-    //cout << minStepsToAim;
+    return 0;
 }
