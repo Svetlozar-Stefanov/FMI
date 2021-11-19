@@ -45,8 +45,32 @@ vector<int> getAsVector(int num)
 	return digits;
 }
 
+int matches(const vector<int> num, const vector<int> target)
+{
+	int matches = 0;
+
+	int nSize = num.size();
+	int kSize = target.size();
+
+	for (int i = 0; i < kSize; i++)
+	{
+		if (i >= nSize)
+		{
+			break;
+		}
+		else if (num[i] == target[i])
+		{
+			matches++;
+		}
+	}
+
+	return matches;
+}
+
+
 int shortestPath(const int startValue, const int target)
 {
+	int minMatches = 0;
 	int steps = 0;
 	vector<vector<int>> variations;
 	variations.push_back(getAsVector(startValue));
@@ -54,10 +78,9 @@ int shortestPath(const int startValue, const int target)
 	vector<int> currentVar;
 	vector<int> searchedVar = getAsVector(target);
 
+	vector<vector<int>> currentDepthVar;
 	do
 	{
-		vector<vector<int>> currentDepthVar;
-
 		while (true)
 		{
 			if (variations.size() > 0)
@@ -76,16 +99,22 @@ int shortestPath(const int startValue, const int target)
 				break;
 			}
 
-			int limit = currentVar.size();
+			int currentSize = currentVar.size();
+			int searchedSize = searchedVar.size();
 
-			if (currentVar.size() < searchedVar.size())
+			if (currentSize < searchedSize)
 			{
-				for (int i = 0; i < limit; i++)
+				for (int i = 0; i < searchedSize; i++)
 				{
 					vector<int> temp = currentVar;
 					temp.push_back(searchedVar[i]);
 
-					currentDepthVar.push_back(temp);
+					int numbOfMatches = matches(temp, searchedVar);
+					if (numbOfMatches > minMatches)
+					{
+						minMatches = numbOfMatches;
+						currentDepthVar.push_back(temp);
+					}
 				}
 			}
 
@@ -94,14 +123,19 @@ int shortestPath(const int startValue, const int target)
 				vector<int> temp = currentVar;
 				temp.pop_back();
 
-				currentDepthVar.push_back(temp);
+				int numbOfMatches = matches(temp, searchedVar);
+				if (numbOfMatches > minMatches)
+				{
+					minMatches = numbOfMatches;
+					currentDepthVar.push_back(temp);
+				}
 			}
 
-			
 
-			for (int i = 0; i < limit - 1; i++)
+
+			for (int i = 0; i < currentSize - 1; i++)
 			{
-				for (int j = i + 1; j < limit; j++)
+				for (int j = i + 1; j < currentSize; j++)
 				{
 					vector<int> temp = currentVar;
 
@@ -110,14 +144,19 @@ int shortestPath(const int startValue, const int target)
 					temp[j] = tempNum;
 
 					currentDepthVar.push_back(temp);
+					int numbOfMatches = matches(temp, searchedVar);
+					if (numbOfMatches > minMatches)
+					{
+						minMatches = numbOfMatches;
+						currentDepthVar.push_back(temp);
+					}
 				}
 			}
 		}
 
 		variations = currentDepthVar;
 		steps++;
-	}
-	while (true);
+	} while (true);
 }
 
 int main()

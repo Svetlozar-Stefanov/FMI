@@ -16,9 +16,9 @@ unsigned powerOf(const unsigned num, const unsigned n)
 	return result;
 }
 
-int digitsCount(unsigned num) 
+unsigned digitsCount(unsigned num) 
 {
-    int count = 0;
+    unsigned count = 0;
 
 	do
 	{

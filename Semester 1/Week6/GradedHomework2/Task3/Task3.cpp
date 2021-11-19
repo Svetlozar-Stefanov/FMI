@@ -12,7 +12,7 @@ int firstNumAfterTarget(unsigned n, const unsigned target)
     return n;
 }
 
-int stepsToTarget(unsigned startValue, const unsigned target)
+int shortestPath(unsigned startValue, const unsigned target)
 {
     unsigned steps = 0;
 
@@ -59,14 +59,14 @@ int main()
     unsigned target;
 
     if (!(cin >> n) 
-        || n <= 0
+        || n < 0
         || !(cin >> target))
     {
         cout << "-1";
         return 1;
     }
     
-    cout << stepsToTarget(n, target);
+    cout << shortestPath(n, target);
 
     return 0;
 }
