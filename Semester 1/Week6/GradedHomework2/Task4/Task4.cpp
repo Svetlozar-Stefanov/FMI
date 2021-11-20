@@ -3,6 +3,11 @@
 
 using namespace std;
 
+int absOf(const int num)
+{
+	return num < 0 ? -num : num;
+}
+
 unsigned powerOf(const unsigned num, const unsigned n)
 {
 	unsigned result = 1;
@@ -33,32 +38,44 @@ vector<int> getAsVector(int num)
 	vector<int> digits;
 	int numberOfDigits = digitsCount(num);
 
-	while (num != 0)
+	for (int i = numberOfDigits - 1; i >= 0; i--)
 	{
-		digits.push_back(num / powerOf(10, numberOfDigits - 1));
+		digits.push_back(num / powerOf(10, i));
 
-		num %= powerOf(10, numberOfDigits - 1);
-
-		numberOfDigits--;
+		num %= powerOf(10, i);
 	}
 
 	return digits;
 }
 
-int matches(const vector<int> num, const vector<int> target)
+unsigned timesOf(int num, vector<int> vec)
 {
-	int matches = 0;
-
-	int nSize = num.size();
-	int kSize = target.size();
-
-	for (int i = 0; i < kSize; i++)
+	unsigned reps = 0;
+	for (int i = 0; i < vec.size(); i++)
 	{
-		if (i >= nSize)
+		if (num == vec[i])
+		{
+			reps++;
+		}
+	}
+
+	return reps;
+}
+
+unsigned matches(const vector<int> vec, const vector<int> target)
+{
+	unsigned matches = 0;
+
+	int vecSize = vec.size();
+	int tgSize = target.size();
+
+	for (int i = 0; i < tgSize; i++)
+	{
+		if (i >= vecSize)
 		{
 			break;
 		}
-		else if (num[i] == target[i])
+		else if (vec[i] == target[i])
 		{
 			matches++;
 		}
@@ -67,96 +84,124 @@ int matches(const vector<int> num, const vector<int> target)
 	return matches;
 }
 
-
-int shortestPath(const int startValue, const int target)
+vector<int> getOptimalSwitch(const vector<int> vec, const vector<int> target)
 {
-	int minMatches = 0;
-	int steps = 0;
-	vector<vector<int>> variations;
-	variations.push_back(getAsVector(startValue));
+	vector<int> optimalVec = vec;
+	int vecSize = vec.size();
 
-	vector<int> currentVar;
-	vector<int> searchedVar = getAsVector(target);
-
-	vector<vector<int>> currentDepthVar;
-	do
+	int minMatches = matches(vec, target);
+	for (int i = 0; i < vecSize - 1; i++)
 	{
-		while (true)
+		for (int j = i + 1; j < vecSize; j++)
 		{
-			if (variations.size() > 0)
-			{
-				currentVar = variations[0];
-				variations.erase(variations.begin());
-			}
-			else
-			{
-				break;
-			}
+			vector<int> temp = vec;
 
-			if (currentVar == searchedVar)
+			int tempNum = temp[i];
+			temp[i] = temp[j];
+			temp[j] = tempNum;
+
+			int nMatches = matches(temp, target);
+			int lastDigit = temp[temp.size() - 1];
+			if (timesOf(lastDigit, target) == 0)
 			{
-				return steps;
-				break;
+				nMatches++;
 			}
 
-			int currentSize = currentVar.size();
-			int searchedSize = searchedVar.size();
-
-			if (currentSize < searchedSize)
+			if (nMatches > minMatches)
 			{
-				for (int i = 0; i < searchedSize; i++)
-				{
-					vector<int> temp = currentVar;
-					temp.push_back(searchedVar[i]);
-
-					int numbOfMatches = matches(temp, searchedVar);
-					if (numbOfMatches > minMatches)
-					{
-						minMatches = numbOfMatches;
-						currentDepthVar.push_back(temp);
-					}
-				}
-			}
-
-			if (currentVar.size() > 0)
-			{
-				vector<int> temp = currentVar;
-				temp.pop_back();
-
-				int numbOfMatches = matches(temp, searchedVar);
-				if (numbOfMatches > minMatches)
-				{
-					minMatches = numbOfMatches;
-					currentDepthVar.push_back(temp);
-				}
-			}
-
-
-
-			for (int i = 0; i < currentSize - 1; i++)
-			{
-				for (int j = i + 1; j < currentSize; j++)
-				{
-					vector<int> temp = currentVar;
-
-					int tempNum = temp[i];
-					temp[i] = temp[j];
-					temp[j] = tempNum;
-
-					currentDepthVar.push_back(temp);
-					int numbOfMatches = matches(temp, searchedVar);
-					if (numbOfMatches > minMatches)
-					{
-						minMatches = numbOfMatches;
-						currentDepthVar.push_back(temp);
-					}
-				}
+				minMatches = nMatches;
+				optimalVec = temp;
 			}
 		}
+	}
 
-		variations = currentDepthVar;
+	return optimalVec;
+}
+
+vector<int> getOptimalAddition(const vector<int> vec, const vector<int> target)
+{
+	vector<int> optimal = vec;
+	int tgSize = target.size();
+	int minMatches = 0;
+
+	for (int i = 0; i < tgSize; i++)
+	{
+		vector<int> temp = vec;
+
+		if (timesOf(target[i], target) > timesOf(target[i], temp))
+		{
+			temp.push_back(target[i]);
+
+			int nMatches = matches(getOptimalSwitch(temp, target), target);
+			if (nMatches > minMatches)
+			{
+				minMatches = nMatches;
+				optimal = temp;
+			}
+		}
+	}
+
+	return optimal;
+}
+
+int getShortesPath(const int start, const int end)
+{
+	vector<int> current = getAsVector(start);
+	vector<int> target = getAsVector(end);
+	int cntSize = current.size();
+	int tgSize = target.size();
+
+	int steps = 0;
+	int minMatches;
+	vector<int> optimal;
+	while (current != target)
+	{
+		//Removes all excessive digits from the back of the array
+		while (cntSize > 0
+			&& timesOf(current[cntSize - 1], target) < timesOf(current[cntSize - 1], current))
+		{
+			current.pop_back();
+			cntSize = current.size();
+			steps++;
+		}
+
+		if (current == target)
+		{
+			break;
+		}
+
+		minMatches = 0;
+		optimal = current;
+
+		//Gets the optimal addition of digit
+		if (cntSize <= tgSize)
+		{
+			optimal = getOptimalAddition(current, target);
+		}
+		minMatches = matches(optimal, target);
+
+		//Gets the optimal switch of two digits and compares it to the addition
+		vector<int> temp = getOptimalSwitch(current, target);
+		int nMatches = matches(temp, target);
+		int tempSize = temp.size();
+		if (tempSize > 0
+			&& timesOf(temp[tempSize - 1], target) == 0)
+		{
+			nMatches++;
+		}
+		if (nMatches > minMatches)
+		{
+			minMatches = nMatches;
+			optimal = temp;
+		}
+
+		//Finally we get the most optimal of the two and iterate again
+		current = optimal;
+		cntSize = current.size();
 		steps++;
-	} while (true);
+	}
+
+	return steps;
 }
 
 int main()
@@ -170,5 +215,5 @@ int main()
 		return 1;
 	}
 
-	cout << shortestPath(n, k);
+	cout << getShortesPath(n, k);
 }
