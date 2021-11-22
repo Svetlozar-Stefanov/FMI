@@ -1,72 +1,86 @@
+/**
+*
+* Solution to homework assignment 2
+* Introduction to programming course
+* Faculty of Mathematics and Informatics of Sofia University
+* Winter semester 2021/2022
+*
+* @author Svetlozar Stefanov
+* @idnumber 4MI0600030
+* @task 3
+* @compiler VC
+*
+*/
+
 #include <iostream>
 
 using namespace std;
 
-int firstNumAfterTarget(unsigned n, const unsigned target) 
+int firstNumAfterTarget(unsigned n, const unsigned target)
 {
-    while (n < target)
-    {
-        n *= 2;
-    }
+	while (n < target)
+	{
+		n *= 2;
+	}
 
-    return n;
+	return n;
 }
 
 int shortestPath(unsigned startValue, const unsigned target)
 {
-    unsigned steps = 0;
+	unsigned steps = 0;
 
-    while (startValue != target)
-    {
-        if (startValue > target)
-        {
-            while (startValue > target)
-            {
-                startValue--;
-                steps++;
-            }
-        }
-        else if (startValue < target)
-        {
-            unsigned multipiledNum = firstNumAfterTarget(startValue, target);
+	while (startValue != target)
+	{
 
-            unsigned subtractedNum = startValue;
-            if (startValue > 1)
-            {
-                subtractedNum -= 1;
-            }
-            subtractedNum = firstNumAfterTarget(subtractedNum, target);
+		while (startValue > target)
+		{
+			startValue--;
+			steps++;
+		}
 
-            if (multipiledNum - target <= subtractedNum - target)
-            {
-                startValue *= 2;
-                steps++;
-            }
-            else if (multipiledNum - target > subtractedNum - target)
-            {
-                startValue -= 1;
-                steps++;
-            }
-        }
-    }
+		if (startValue < target)
+		{
+			unsigned multipliedNum = firstNumAfterTarget(startValue, target);
 
-    return steps;
+			unsigned subtractedNum = startValue;
+			if (startValue > 1)
+			{
+				subtractedNum--;
+			}
+			subtractedNum = firstNumAfterTarget(subtractedNum, target);
+
+			if (multipliedNum - target <= subtractedNum - target)
+			{
+				startValue *= 2;
+				steps++;
+			}
+			else if (multipliedNum - target > subtractedNum - target)
+			{
+				startValue -= 1;
+				steps++;
+			}
+		}
+	}
+
+	return steps;
 }
 
 int main()
 {
-    unsigned n;
-    unsigned target;
+	int n;
+	int target;
 
-    if (!(cin >> n) 
-        || n < 0
-        || !(cin >> target))
-    {
-        cout << "-1";
-        return 1;
-    }
-    
-    cout << shortestPath(n, target);
+	if (!(cin >> n)
+		|| !(cin >> target)
+		|| n < 0 || target < 0
+		|| (n == 0 && target > 0))
+	{
+		cout << "-1";
+		return 1;
+	}
 
-    return 0;
+	cout << shortestPath(n, target);
+
+	return 0;
 }

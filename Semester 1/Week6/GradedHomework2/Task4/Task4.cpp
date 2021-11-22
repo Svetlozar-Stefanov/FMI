@@ -1,3 +1,17 @@
+/**
+*
+* Solution to homework assignment 2
+* Introduction to programming course
+* Faculty of Mathematics and Informatics of Sofia University
+* Winter semester 2021/2022
+*
+* @author Svetlozar Stefanov
+* @idnumber 4MI0600030
+* @task 4
+* @compiler VC
+*
+*/
+
 #include <iostream>
 #include <vector>
 
@@ -209,11 +223,13 @@ int main()
 	int n;
 	int k;
 
-	if (!(cin >> n) || !(cin >> k))
+	if (!(cin >> n) || !(cin >> k)
+		|| (n < 0 && k > 0)
+		|| (n > 0 && k < 0))
 	{
 		cout << "-1";
 		return 1;
 	}
 
-	cout << getShortesPath(n, k);
+	cout << getShortesPath(absOf(n), absOf(k));
 }
