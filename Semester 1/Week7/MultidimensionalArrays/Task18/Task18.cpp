@@ -22,6 +22,7 @@ int main()
 	bool hasRisingDiag = true;
 
 	int i = 0;
+	int j = 1;
 	int row = 0;
 	int col = 0;
 
@@ -33,21 +34,16 @@ int main()
 		if (N - 2 - i >= 0)
 		{
 			row = N - 2 - i;
-			if (row == 0)
-			{
-				i = 1;
-			}
+			i++;
+		}
+		else if (j < M - 1)
+		{
+			col = j;
+			j++;
 		}
 		else
 		{
-			if (i < M - 1)
-			{
-				col = i;
-			}
-			else
-			{
-				break;
-			}
+			break;
 		}
 		
 		while (row < N - 1 && col < M - 1)
@@ -60,8 +56,6 @@ int main()
 			row++;
 			col++;
 		}
-
-		i++;
 	}
 
 	cout << hasRisingDiag;
