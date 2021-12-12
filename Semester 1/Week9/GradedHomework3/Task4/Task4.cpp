@@ -34,7 +34,7 @@ bool containsInPrevious(const char str[], const int index)
 int longestSubstrWithUniqueSymbolsLength(const char str[])
 {
 	int maxLen = 1;
-	int tempLen = 0;
+	int tempLen = 1;
 
 	for (int i = 1; i < strlen(str); i++)
 	{
@@ -45,6 +45,7 @@ int longestSubstrWithUniqueSymbolsLength(const char str[])
 		else if (maxLen < tempLen)
 		{
 			maxLen = tempLen;
+			tempLen = 1;
 		}
 	}
 
@@ -60,7 +61,13 @@ int main()
 {
 	char ch[100];
 
-	cin >> ch;
+	if (!(cin >> ch))
+	{
+		cout << "-1";
+		return 1;
+	}
 
 	cout << longestSubstrWithUniqueSymbolsLength(ch);
+
+	return 0;
 }
