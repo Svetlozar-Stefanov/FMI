@@ -2,16 +2,15 @@
 
 using namespace std;
 
-int** createMatrix(const int rows, const int colSizes[])
+int** createMatrix(const int rows, const int cols)
 {
 	int** matrix = new int* [rows];
 	for (int i = 0; i < rows; i++)
 	{
-		int cols = colSizes[i];
 		int* row = new int[cols];
-		for (int j = 0; j < cols; j++)
+		for (int i = 0; i < cols; i++)
 		{
-			cin >> row[j];
+			cin >> row[i];
 		}
 
 		matrix[i] = row;
@@ -20,7 +19,7 @@ int** createMatrix(const int rows, const int colSizes[])
 	return matrix;
 }
 
-void destroyMatrix(int** matrix, const int rows, const int colSizes[])
+void destroyMatrix(int** matrix, const int rows, const int cols)
 {
 	for (int i = 0; i < rows; i++)
 	{
@@ -32,27 +31,33 @@ void destroyMatrix(int** matrix, const int rows, const int colSizes[])
 int main()
 {
 	int rows;
-	cin >> rows;
+	int cols;
 
-	int* cols = new int[rows];
-	for (int i = 0; i < rows; i++)
-	{
-		cin >> cols[i];
-	}
+	cin >> rows;
+	cin >> cols;
 
 	int** matrix = createMatrix(rows, cols);
 
 
+	bool hasNegative = false;
 	for (int i = 0; i < rows; i++)
 	{
-		int sum = 0;
-		for (int j = 0; j < cols[i]; j++)
+		for (int j = 0; j < cols; j++)
 		{
-			sum += matrix[i][j];
+			if (matrix[i][j] < 0)
+			{
+				hasNegative = true;
+				break;
+			}
 		}
 
-		cout << sum << ' ';
+		if (hasNegative)
+		{
+			break;
+		}
 	}
+
+	cout << hasNegative;
 
 	destroyMatrix(matrix, rows, cols);
 }
