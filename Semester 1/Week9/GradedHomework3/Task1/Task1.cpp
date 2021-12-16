@@ -1,8 +1,27 @@
+/**
+*
+* Solution to homework assignment 3
+* Introduction to programming course
+* Faculty of Mathematics and Informatics of Sofia University
+* Winter semester 2021/2022
+*
+* @author Svetlozar Stefanov
+* @idnumber 4MI0600030
+* @task 1
+* @compiler VC
+*
+*/
+
 #include <iostream>
 
 using namespace std;
 
-unsigned strlen(const char ch[]) 
+int absolute(const int a) 
+{
+	return a < 0 ? -a : a;
+}
+
+unsigned strleng(const char ch[]) 
 {
 	unsigned counter = 0;
 
@@ -18,7 +37,7 @@ unsigned strlen(const char ch[])
 
 bool changedLetterCount(const char word1[],const char word2[]) 
 {
-	if (strlen(word1) != strlen(word2))
+	if (absolute(strleng(word1) - strleng(word2)) == 1)
 	{
 		return true;
 	}
@@ -30,7 +49,7 @@ bool changedLetter(const char word1[], const char word2[])
 {
 	bool changed = false;
 
-	for (int i = 0; i < strlen(word1); i++)
+	for (int i = 0; i < strleng(word1); i++)
 	{
 		if (!changed && word1[i] != word2[i])
 		{
@@ -52,9 +71,11 @@ bool isCorrect(const char sequence[][20], const int sequenceSize)
 
 	for (int i = 0; i < sequenceSize - 1; i++)
 	{
-		if (!(changedLetterCount(sequence[i], sequence[i + 1]) || changedLetter(sequence[i], sequence[i + 1])))
+		if (!(changedLetterCount(sequence[i], sequence[i + 1]) 
+			|| changedLetter(sequence[i], sequence[i + 1])))
 		{
 			correct = false;
+			break;
 		}
 	}
 
@@ -70,7 +91,7 @@ int main()
 		|| N < 2 || N > 50)
 	{
 		cout << "-1";
-		return 1;
+		return 1;  
 	}
 
 	for (int i = 0; i < N; i++)
@@ -78,5 +99,12 @@ int main()
 		cin >> sequence[i];
 	}
 
-	cout << isCorrect(sequence, N);
-}
+	if (isCorrect(sequence, N))
+	{
+		cout << "true";
+	}
+	else
+	{
+		cout << "false";
+	}
+} 

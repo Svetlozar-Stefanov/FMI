@@ -1,8 +1,22 @@
+/**
+*
+* Solution to homework assignment 3
+* Introduction to programming course
+* Faculty of Mathematics and Informatics of Sofia University
+* Winter semester 2021/2022
+*
+* @author Svetlozar Stefanov
+* @idnumber 4MI0600030
+* @task 4
+* @compiler VC
+*
+*/
+
 #include <iostream>
 
 using namespace std;
 
-unsigned strlen(const char str[])
+unsigned strleng(const char str[])
 {
 	unsigned counter = 0;
 
@@ -16,10 +30,10 @@ unsigned strlen(const char str[])
 	return counter;
 }
 
-bool containsInPrevious(const char str[], const int index)
+bool containsInRange(const char str[], const int end, const int index)
 {
 	bool contains = false;
-	for (int i = index - 1; i >= 0; i--)
+	for (int i = index - 1; i >= end; i--)
 	{
 		if (str[i] == str[index])
 		{
@@ -35,10 +49,11 @@ int longestSubstrWithUniqueSymbolsLength(const char str[])
 {
 	int maxLen = 1;
 	int tempLen = 1;
+	int end = 0;
 
-	for (int i = 1; i < strlen(str); i++)
+	for (int i = 1; i < strleng(str); i++)
 	{
-		if (!containsInPrevious(str, i))
+		if (!containsInRange(str, end, i))
 		{
 			tempLen++;
 		}
@@ -46,6 +61,7 @@ int longestSubstrWithUniqueSymbolsLength(const char str[])
 		{
 			maxLen = tempLen;
 			tempLen = 1;
+			end = i;
 		}
 	}
 
@@ -59,7 +75,7 @@ int longestSubstrWithUniqueSymbolsLength(const char str[])
 
 int main()
 {
-	char ch[100];
+	char ch[101];
 
 	if (!(cin >> ch))
 	{
