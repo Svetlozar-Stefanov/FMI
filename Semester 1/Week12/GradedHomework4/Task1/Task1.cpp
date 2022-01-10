@@ -47,7 +47,7 @@ void deleteMatrix(char** matrix, const int rows)
 {
     for (int i = 0; i < rows; i++)
     {
-        delete[] matrix[i];
+        delete matrix[i];
     }
     delete[] matrix;
 }
