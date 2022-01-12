@@ -16,6 +16,24 @@ bool STICK_REPRESENTATIONS[][STICKS_IN_A_NUM] =
 
 bool EMPTY_NUM[STICKS_IN_A_NUM] = { 0,0,0,0,0,0,0 };
 
+int strleng(const char* str)
+{
+	if (str == nullptr)
+	{
+		return -1;
+	}
+
+	unsigned count = 0;
+	unsigned i = 0;
+	while (str[i] != '\0')
+	{
+		count++;
+		i++;
+	}
+
+	return count;
+}
+
 void deleteComb(bool** comb)
 {
 	int i = 0;
@@ -25,6 +43,17 @@ void deleteComb(bool** comb)
 	}
 
 	delete[] comb;
+}
+
+void deleteEquations(char** equa)
+{
+	int i = 0;
+	while (equa[i][0] != '\0')
+	{
+		delete[] equa[i++];
+	}
+
+	delete[] equa;
 }
 
 void deleteMatrix(bool** matrix, const int rows)
@@ -156,7 +185,7 @@ int getStickAsNum(const bool* sN)
 	return -1;
 }
 
-char* toStr(const int n1, const int n2, const int result, char operation)
+char* toStr(const int n1, const int n2, const int result, const char operation)
 {
 	char* newStr = new char[6];
 	newStr[0] = n1 + '0';
@@ -169,7 +198,7 @@ char* toStr(const int n1, const int n2, const int result, char operation)
 	return newStr;
 }
 
-char* checkStickSwitchCase(bool** equation, const char operation)
+char* checkStickSwitchCase(bool** equation, const char operation, char ** fixedEquations, int &index)
 {
 	for (int i = 0; i < 3; i++)
 	{
@@ -237,11 +266,11 @@ char* checkStickSwitchCase(bool** equation, const char operation)
 
 					if (operation == '+' && n1 + n2 == result)
 					{
-						return  toStr(n1, n2, result, operation);
+						fixedEquations[index++] = toStr(n1, n2, result, operation);
 					}
 					else if (operation == '-' && n1 - n2 == result)
 					{
-						return  toStr(n1, n2, result, operation);
+						fixedEquations[index++] = toStr(n1, n2, result, operation);
 					}
 
 					aI++;
@@ -257,7 +286,7 @@ char* checkStickSwitchCase(bool** equation, const char operation)
 	return nullptr;
 }
 
-char* checkSignSwitchCase(bool** equation)
+char* checkSignSwitchCase(bool** equation, char** fixedEquations, int& index)
 {
 	for (int i = 0; i < 3; i++)
 	{
@@ -290,7 +319,7 @@ char* checkSignSwitchCase(bool** equation)
 
 			if (n1 - n2 == result)
 			{
-				return toStr(n1, n2, result, '-');
+				fixedEquations[index++] = toStr(n1, n2, result, '-');
 			}
 
 			aI++;
@@ -302,7 +331,7 @@ char* checkSignSwitchCase(bool** equation)
 	return nullptr;
 }
 
-char* checkInNumberSwitchCase(bool** equation, const char operation)
+char* checkInNumberSwitchCase(bool** equation, const char operation, char** fixedEquations, int& index)
 {
 	for (int i = 0; i < 3; i++)
 	{
@@ -335,11 +364,11 @@ char* checkInNumberSwitchCase(bool** equation, const char operation)
 
 			if (operation == '+' && n1 + n2 == result)
 			{
-				return toStr(n1, n2, result, operation);
+				fixedEquations[index++] = toStr(n1, n2, result, operation);
 			}
 			else if (operation == '-' && n1 - n2 == result)
 			{
-				return toStr(n1, n2, result, operation);
+				fixedEquations[index++] = toStr(n1, n2, result, operation);
 			}
 
 			aI++;
@@ -351,8 +380,13 @@ char* checkInNumberSwitchCase(bool** equation, const char operation)
 	return nullptr;
 }
 
-char* fixEquation(char* str)
+char** fixEquation(char* str)
 {
+	if (str == nullptr || strlen(str) != 5)
+	{
+		return nullptr;
+	}
+
 	int n1 = str[0] - '0';
 	char operation = str[1];
 	char n2 = str[2] - '0';
@@ -362,27 +396,28 @@ char* fixEquation(char* str)
 	bool* sN2 = STICK_REPRESENTATIONS[n2];
 	bool* sR = STICK_REPRESENTATIONS[result];
 
-	bool ** equation = new bool*[3];
+	bool** equation = new bool* [3];
 	equation[0] = sN1;
 	equation[1] = sN2;
 	equation[2] = sR;
 
-	char* fixedEquation = nullptr;
+	char** fixedEquations = new char* [100];
+	int index = 0;
 
-	fixedEquation = checkStickSwitchCase(equation, operation);
+	checkStickSwitchCase(equation, operation, fixedEquations, index);
+	checkInNumberSwitchCase(equation, operation, fixedEquations, index);
+	if (operation == '+')
+	{
+		checkSignSwitchCase(equation, fixedEquations, index);
+	}
 
-	if (fixedEquation == nullptr && operation == '+')
-	{
-		fixedEquation = checkSignSwitchCase(equation);
-	}
-	if (fixedEquation == nullptr)
-	{
-		fixedEquation = checkInNumberSwitchCase(equation, operation);
-	}
+	char * end = new char[1];
+	end[0] = '\0';
+	fixedEquations[index] = end;
 
 	delete[] equation;
 
-	return fixedEquation;
+	return fixedEquations;
 }
 
 int main()
@@ -391,19 +426,27 @@ int main()
 
 	std::cin >> str;
 
-	char* fixedEquation = fixEquation(str);
-	if (fixedEquation == nullptr)
+	char** fixedEquations = fixEquation(str);
+	if (fixedEquations == nullptr)
+	{
+		std::cout << "-1";
+		return 1;
+	}
+	if (fixedEquations[0][0] == '\0')
 	{
 		std::cout << "No";
 	}
 	else
 	{
-		for (int i = 0; i < 5; i++)
+		int i = 0;
+		while (fixedEquations[i][0] != '\0')
 		{
-			std::cout << fixedEquation[i];
+			std::cout << fixedEquations[i++] << '\n';
 		}
 	}
 
-	delete[] fixedEquation;
+	deleteEquations(fixedEquations);
+
+	return 0;
 }
 
