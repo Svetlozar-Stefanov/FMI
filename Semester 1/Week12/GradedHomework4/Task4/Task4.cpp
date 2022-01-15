@@ -1,3 +1,17 @@
+/**
+*
+* Solution to homework assignment 4
+* Introduction to programming course
+* Faculty of Mathematics and Informatics of Sofia University
+* Winter semester 2021/2022
+*
+* @author Svetlozar Stefanov
+* @idnumber 4MI0600030
+* @task 4
+* @compiler VC
+*
+*/
+
 #include <iostream>
 
 bool isLesserHacksaw(const int* n, const int size, const int i)
@@ -81,18 +95,27 @@ int main()
 {
     int N;
     std::cin >> N;
-    if (N < 3)
-    {
-        std::cout << "-1";
-        return 1;
-    }
 
     int* n = new int[N];
     for (int i = 0; i < N; i++)
     {
         std::cin >> n[i];
     }
-    std::cout<<isHacksaw(n,N);
 
+    if (N < 3)
+    {
+        std::cout << "-1";
+        return 1;
+    }
 
+    if (isHacksaw(n, N))
+    {
+        std::cout << "yes";
+    }
+    else
+    {
+        std::cout << "no";
+    }
+
+    delete[] n;
 }

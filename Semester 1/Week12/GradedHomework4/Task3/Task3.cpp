@@ -1,9 +1,29 @@
+/**
+*
+* Solution to homework assignment 4
+* Introduction to programming course
+* Faculty of Mathematics and Informatics of Sofia University
+* Winter semester 2021/2022
+*
+* @author Svetlozar Stefanov
+* @idnumber 4MI0600030
+* @task 3
+* @compiler VC
+*
+*/
+
 #include <iostream>
 
 const int STICKS_IN_A_NUM = 7;
 
+const int EQUATION_SIZE = 3;
+const int N1_INDX = 0;
+const int N2_INDX = 1;
+const int RES_INDX = 2;
+
 bool STICK_REPRESENTATIONS[][STICKS_IN_A_NUM] =
-{ {1,1,1,1,1,1,0},
+{ 
+	{1,1,1,1,1,1,0},
 	{0,1,1,0,0,0,0},
 	{1,1,0,1,1,0,1},
 	{1,1,1,1,0,0,1},
@@ -12,7 +32,8 @@ bool STICK_REPRESENTATIONS[][STICKS_IN_A_NUM] =
 	{1,0,1,1,1,1,1},
 	{1,1,1,0,0,0,0},
 	{1,1,1,1,1,1,1},
-	{1,1,1,1,0,1,1} };
+	{1,1,1,1,0,1,1} 
+};
 
 bool EMPTY_NUM[STICKS_IN_A_NUM] = { 0,0,0,0,0,0,0 };
 
@@ -50,7 +71,7 @@ void deleteEquations(char** equa)
 	int i = 0;
 	while (equa[i][0] != '\0')
 	{
-		delete[] equa[i++];
+		delete equa[i++];
 	}
 
 	delete[] equa;
@@ -67,6 +88,11 @@ void deleteMatrix(bool** matrix, const int rows)
 
 bool* copy(const bool* sN)
 {
+	if (sN == nullptr)
+	{
+		return nullptr;
+	}
+
 	bool* newSN = new bool[STICKS_IN_A_NUM];
 
 	for (int i = 0; i < STICKS_IN_A_NUM; i++)
@@ -79,6 +105,12 @@ bool* copy(const bool* sN)
 
 bool equal(const bool* r1, const bool* r2)
 {
+	if (r1 == nullptr 
+		|| r2 == nullptr)
+	{
+		return false;
+	}
+
 	for (int i = 0; i < STICKS_IN_A_NUM; i++)
 	{
 		if (r1[i] != r2[i])
@@ -91,6 +123,11 @@ bool equal(const bool* r1, const bool* r2)
 
 bool isValidRepresentation(const bool* nR)
 {
+	if (nR == nullptr)
+	{
+		return false;
+	}
+
 	for (int i = 0; i < 10; i++)
 	{
 		if (equal(STICK_REPRESENTATIONS[i], nR))
@@ -104,6 +141,11 @@ bool isValidRepresentation(const bool* nR)
 
 bool** getAddStickCombinations(const bool* sN)
 {
+	if (sN == nullptr)
+	{
+		return nullptr;
+	}
+
 	bool** combinations = new bool* [10];
 	int index = 0;
 	for (int i = 0; i < STICKS_IN_A_NUM; i++)
@@ -125,6 +167,11 @@ bool** getAddStickCombinations(const bool* sN)
 
 bool** getRemoveStickCombinations(const bool* sN)
 {
+	if (sN == nullptr)
+	{
+		return nullptr;
+	}
+
 	bool** combinations = new bool* [10];
 	int index = 0;
 	for (int i = 0; i < STICKS_IN_A_NUM; i++)
@@ -146,6 +193,11 @@ bool** getRemoveStickCombinations(const bool* sN)
 
 bool** getMoveStickCombinations(const bool* sN)
 {
+	if (sN == nullptr)
+	{
+		return nullptr;
+	}
+
 	bool** combinations = new bool* [10];
 	int index = 0;
 
@@ -174,6 +226,11 @@ bool** getMoveStickCombinations(const bool* sN)
 
 int getStickAsNum(const bool* sN)
 {
+	if (sN == nullptr)
+	{
+		return -1;
+	}
+
 	for (int i = 0; i < 10; i++)
 	{
 		if (equal(STICK_REPRESENTATIONS[i], sN))
@@ -198,12 +255,99 @@ char* toStr(const int n1, const int n2, const int result, const char operation)
 	return newStr;
 }
 
-char* checkStickSwitchCase(bool** equation, const char operation, char ** fixedEquations, int &index)
+void orderEquation(const int i, const int j, int& n1, int& n2, int& result, const int aI, const int rI, bool** addStickComb, bool ** removeStickComb, bool** equation)
 {
-	for (int i = 0; i < 3; i++)
+	if (addStickComb == nullptr 
+		|| removeStickComb == nullptr
+		|| equation == nullptr)
+	{
+		return;
+	}
+
+	if (i == N1_INDX)
+	{
+		n1 = getStickAsNum(removeStickComb[rI]);
+		if (j != RES_INDX)
+		{
+			n2 = getStickAsNum(addStickComb[aI]);
+			result = getStickAsNum(equation[RES_INDX]);
+		}
+		else
+		{
+			n2 = getStickAsNum(equation[N2_INDX]);
+			result = getStickAsNum(addStickComb[aI]);
+		}
+	}
+	else if (i == N2_INDX)
+	{
+		n2 = getStickAsNum(removeStickComb[rI]);
+		if (j != RES_INDX)
+		{
+			n1 = getStickAsNum(addStickComb[aI]);
+			result = getStickAsNum(equation[RES_INDX]);
+		}
+		else
+		{
+			n1 = getStickAsNum(equation[N1_INDX]);
+			result = getStickAsNum(addStickComb[aI]);
+		}
+	}
+	else if (i == RES_INDX)
+	{
+		result = getStickAsNum(removeStickComb[rI]);
+		if (j == N2_INDX)
+		{
+			n1 = getStickAsNum(addStickComb[aI]);
+			n2 = getStickAsNum(equation[N2_INDX]);
+		}
+		else
+		{
+			n2 = getStickAsNum(addStickComb[aI]);
+			n1 = getStickAsNum(equation[N1_INDX]);
+		}
+	}
+}
+
+void orderEquation(const int i, int& n1, int& n2, int& result, const int aI, bool** comb, bool** equation)
+{
+	if (comb == nullptr
+		|| equation == nullptr)
+	{
+		return;
+	}
+
+	if (i == N1_INDX)
+	{
+		n1 = getStickAsNum(comb[aI]);
+		n2 = getStickAsNum(equation[N2_INDX]);
+		result = getStickAsNum(equation[RES_INDX]);
+	}
+	else if (i == N2_INDX)
+	{
+		n1 = getStickAsNum(equation[N1_INDX]);
+		n2 = getStickAsNum(comb[aI]);
+		result = getStickAsNum(equation[RES_INDX]);
+	}
+	else if (i == RES_INDX)
+	{
+		n1 = getStickAsNum(equation[N1_INDX]);
+		n2 = getStickAsNum(equation[N2_INDX]);
+		result = getStickAsNum(comb[aI]);
+	}
+}
+
+void checkStickSwitchCase(bool** equation, const char operation, char ** fixedEquations, int &index)
+{
+	if (fixedEquations == nullptr
+		|| equation == nullptr)
+	{
+		return;
+	}
+
+	for (int i = 0; i < EQUATION_SIZE; i++)
 	{
 		bool** removeStickComb = getRemoveStickCombinations(equation[i]);
-		for (int j = 0; j < 3; j++)
+		for (int j = 0; j < EQUATION_SIZE; j++)
 		{
 			if (i == j)
 			{
@@ -221,48 +365,8 @@ char* checkStickSwitchCase(bool** equation, const char operation, char ** fixedE
 					int n1;
 					int n2;
 					int result;
-					if (i == 0)
-					{
-						n1 = getStickAsNum(removeStickComb[rI]);
-						if (j != 2)
-						{
-							n2 = getStickAsNum(addStickComb[aI]);
-							result = getStickAsNum(equation[2]);
-						}
-						else
-						{
-							n2 = getStickAsNum(equation[1]);
-							result = getStickAsNum(addStickComb[aI]);
-						}
-					}
-					else if (i == 1)
-					{
-						n2 = getStickAsNum(removeStickComb[rI]);
-						if (j != 2)
-						{
-							n1 = getStickAsNum(addStickComb[aI]);
-							result = getStickAsNum(equation[2]);
-						}
-						else
-						{
-							n1 = getStickAsNum(equation[0]);
-							result = getStickAsNum(addStickComb[aI]);
-						}
-					}
-					else if (i == 2)
-					{
-						result = getStickAsNum(removeStickComb[rI]);
-						if (j == 1)
-						{
-							n1 = getStickAsNum(addStickComb[aI]);
-							n2 = getStickAsNum(equation[1]);
-						}
-						else
-						{
-							n2 = getStickAsNum(addStickComb[aI]);
-							n1 = getStickAsNum(equation[0]);
-						}
-					}
+					
+					orderEquation(i, j, n1,n2, result, aI, rI, addStickComb, removeStickComb, equation);
 
 					if (operation == '+' && n1 + n2 == result)
 					{
@@ -283,57 +387,82 @@ char* checkStickSwitchCase(bool** equation, const char operation, char ** fixedE
 		deleteComb(removeStickComb);
 	}
 
-	return nullptr;
+	return;
 }
 
-char* checkSignSwitchCase(bool** equation, char** fixedEquations, int& index)
+void checkSignSwitchCase(bool** equation, const char operation ,char** fixedEquations, int& index)
 {
-	for (int i = 0; i < 3; i++)
+	if (fixedEquations == nullptr
+		|| equation == nullptr)
 	{
-		bool** addStickComb = getAddStickCombinations(equation[i]);
-		int aI = 0;
-		while (addStickComb[aI] != EMPTY_NUM)
-		{
-			int n1;
-			int n2;
-			int result;
-
-			if (i == 0)
-			{
-				n1 = getStickAsNum(addStickComb[aI]);
-				n2 = getStickAsNum(equation[1]);
-				result = getStickAsNum(equation[2]);
-			}
-			else if (i == 1)
-			{
-				n1 = getStickAsNum(equation[0]);
-				n2 = getStickAsNum(addStickComb[aI]);
-				result = getStickAsNum(equation[2]);
-			}
-			else if (i == 2)
-			{
-				n1 = getStickAsNum(equation[0]);
-				n2 = getStickAsNum(equation[1]);
-				result = getStickAsNum(addStickComb[aI]);
-			}
-
-			if (n1 - n2 == result)
-			{
-				fixedEquations[index++] = toStr(n1, n2, result, '-');
-			}
-
-			aI++;
-		}
-
-		deleteComb(addStickComb);
+		return;
 	}
 
-	return nullptr;
+	if (operation == '+')
+	{
+		for (int i = 0; i < EQUATION_SIZE; i++)
+		{
+			bool** addStickComb = getAddStickCombinations(equation[i]);
+			int aI = 0;
+			while (addStickComb[aI] != EMPTY_NUM)
+			{
+				int n1;
+				int n2;
+				int result;
+
+				orderEquation(i, n1,n2,result, aI, addStickComb, equation);
+
+				if (n1 - n2 == result)
+				{
+					fixedEquations[index++] = toStr(n1, n2, result, '-');
+				}
+
+				aI++;
+			}
+
+			deleteComb(addStickComb);
+		}
+	}
+
+	if (operation == '-')
+	{
+		for (int i = 0; i < EQUATION_SIZE; i++)
+		{
+			bool** removeStickComb = getRemoveStickCombinations(equation[i]);
+			int aI = 0;
+			while (removeStickComb[aI] != EMPTY_NUM)
+			{
+				int n1;
+				int n2;
+				int result;
+
+				orderEquation(i, n1, n2, result, aI, removeStickComb, equation);
+
+				if (n1 + n2 == result)
+				{
+					fixedEquations[index++] = toStr(n1, n2, result, '+');
+				}
+
+				aI++;
+			}
+
+			deleteComb(removeStickComb);
+		}
+	}
+	
+
+	return;
 }
 
-char* checkInNumberSwitchCase(bool** equation, const char operation, char** fixedEquations, int& index)
+void checkInNumberSwitchCase(bool** equation, const char operation, char** fixedEquations, int& index)
 {
-	for (int i = 0; i < 3; i++)
+	if (fixedEquations == nullptr
+		|| equation == nullptr)
+	{
+		return; 
+	}
+
+	for (int i = 0; i < EQUATION_SIZE; i++)
 	{
 		bool** moveStickComb = getMoveStickCombinations(equation[i]);
 		int aI = 0;
@@ -343,24 +472,7 @@ char* checkInNumberSwitchCase(bool** equation, const char operation, char** fixe
 			int n2;
 			int result;
 
-			if (i == 0)
-			{
-				n1 = getStickAsNum(moveStickComb[aI]);
-				n2 = getStickAsNum(equation[1]);
-				result = getStickAsNum(equation[2]);
-			}
-			else if (i == 1)
-			{
-				n1 = getStickAsNum(equation[0]);
-				n2 = getStickAsNum(moveStickComb[aI]);
-				result = getStickAsNum(equation[2]);
-			}
-			else if (i == 2)
-			{
-				n1 = getStickAsNum(equation[0]);
-				n2 = getStickAsNum(equation[1]);
-				result = getStickAsNum(moveStickComb[aI]);
-			}
+			orderEquation(i, n1, n2, result, aI, moveStickComb, equation);
 
 			if (operation == '+' && n1 + n2 == result)
 			{
@@ -377,7 +489,7 @@ char* checkInNumberSwitchCase(bool** equation, const char operation, char** fixe
 		deleteComb(moveStickComb);
 	}
 
-	return nullptr;
+	return;
 }
 
 char** fixEquation(char* str)
@@ -396,20 +508,17 @@ char** fixEquation(char* str)
 	bool* sN2 = STICK_REPRESENTATIONS[n2];
 	bool* sR = STICK_REPRESENTATIONS[result];
 
-	bool** equation = new bool* [3];
-	equation[0] = sN1;
-	equation[1] = sN2;
-	equation[2] = sR;
+	bool** equation = new bool* [EQUATION_SIZE];
+	equation[N1_INDX] = sN1;
+	equation[N2_INDX] = sN2;
+	equation[RES_INDX] = sR;
 
 	char** fixedEquations = new char* [100];
 	int index = 0;
 
 	checkStickSwitchCase(equation, operation, fixedEquations, index);
 	checkInNumberSwitchCase(equation, operation, fixedEquations, index);
-	if (operation == '+')
-	{
-		checkSignSwitchCase(equation, fixedEquations, index);
-	}
+	checkSignSwitchCase(equation, operation, fixedEquations, index);
 
 	char * end = new char[1];
 	end[0] = '\0';

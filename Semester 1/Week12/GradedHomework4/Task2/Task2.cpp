@@ -1,3 +1,17 @@
+/**
+*
+* Solution to homework assignment 4
+* Introduction to programming course
+* Faculty of Mathematics and Informatics of Sofia University
+* Winter semester 2021/2022
+*
+* @author Svetlozar Stefanov
+* @idnumber 4MI0600030
+* @task 2
+* @compiler VC
+*
+*/
+
 #include <iostream>
 
 int strleng(const char* str)
@@ -20,6 +34,11 @@ int strleng(const char* str)
 
 bool match(const char * text, const int index, const char * str) 
 {
+    if (text == nullptr)
+    {
+        return false;
+    }
+    
     for (int i = 0; i < strleng(str); i++)
     {
         if (strleng(text) < index + i 
@@ -41,8 +60,8 @@ int replace(char* text, const char* const str1, const char* const str2)
         return -2;
     }
 
-    if (text == ""
-        || str1 == "")
+    if (strleng(text) <= 0 
+        || strleng(str1) <= 0)
     {
         return -3;
     }

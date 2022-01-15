@@ -1,3 +1,17 @@
+/**
+*
+* Solution to homework assignment 4
+* Introduction to programming course
+* Faculty of Mathematics and Informatics of Sofia University
+* Winter semester 2021/2022
+*
+* @author Svetlozar Stefanov
+* @idnumber 4MI0600030
+* @task 5
+* @compiler VC
+*
+*/
+
 #include <iostream>
 
 const int EPS = 1000000;
@@ -6,7 +20,7 @@ const int DEG = 4;
 double** createMatrix(const unsigned rows, const unsigned cols)
 {
 	double** matrix = new double* [rows];
-	for (int i = 0; i < rows; i++)
+	for (int i = 0; i < rows - 1; i++)
 	{
 		matrix[i] = new double[cols];
 		for (int j = 0; j < cols; j++)
@@ -15,14 +29,17 @@ double** createMatrix(const unsigned rows, const unsigned cols)
 		}
 	}
 
+	matrix[rows - 1] = nullptr;
+
 	return matrix;
 }
 
-void deleteMatrix(char** matrix, const int rows)
+void deleteMatrix(double** matrix)
 {
-	for (int i = 0; i < rows; i++)
+	int i = 0;
+	while (matrix[i] != nullptr)
 	{
-		delete matrix[i];
+		delete matrix[i++];
 	}
 	delete[] matrix;
 }
@@ -120,6 +137,11 @@ int arrGCD(const double* arr, const int size)
 
 bool hasOnlyWholeNumbers(const double* arr, const int size)
 {
+	if (arr == nullptr)
+	{
+		return false;
+	}
+
 	for (int i = 0; i < size; i++)
 	{
 		if (!equal(arr[i], (int)arr[i]))
@@ -131,8 +153,13 @@ bool hasOnlyWholeNumbers(const double* arr, const int size)
 	return true;
 }
 
-void simplify(double**& a, const int n)
+void simplify(double** a, const int n)
 {
+	if (a == nullptr)
+	{
+		return;
+	}
+
 	for (int i = 0; i < n; i++)
 	{
 		if (hasOnlyWholeNumbers(a[i], n))
@@ -152,36 +179,18 @@ void simplify(double**& a, const int n)
 	}
 }
 
-//int rang(double** a, const int n)
-//{
-//	int vectorRang = n;
-//	for (int i = 0; i < n; i++)
-//	{
-//		bool zeroRow = true;
-//		for (int j = 0; j < DEG; j++)
-//		{
-//			if (!equal(a[i][j], 0))
-//			{
-//				zeroRow = false;
-//				break;
-//			}
-//		}
-//		if (zeroRow)
-//		{
-//			vectorRang--;
-//		}
-//	}
-//
-//	return vectorRang;
-//}
-
 int getRang(double** a)
 {
+	if (a == nullptr)
+	{
+		return -1;
+	}
+
 	int i = 0;
 	int count = 0;
 
 	bool zeroRow;
-	while (true)
+	while (a[i] != nullptr)
 	{
 		zeroRow = true;
 
@@ -193,12 +202,10 @@ int getRang(double** a)
 			}
 		}
 
-		if (zeroRow)
+		if (!zeroRow)
 		{
-			break;
+			count++;
 		}
-
-		count++;
 		i++;
 	}
 
@@ -207,6 +214,11 @@ int getRang(double** a)
 
 void getBasis(double** a, const int n)
 {
+	if (a == nullptr)
+	{
+		return;
+	}
+	
 	for (int i = 0; i < n; i++)
 	{
 		simplify(a, n);
@@ -232,6 +244,11 @@ void getBasis(double** a, const int n)
 
 double** getEquationBasis(double** a, const int n)
 {
+	if (a == nullptr)
+	{
+		return nullptr;
+	}
+
 	int basisSize = DEG - getRang(a);
 
 	double** equationBasis = createMatrix(basisSize + 1, DEG);
@@ -267,17 +284,6 @@ double** getEquationBasis(double** a, const int n)
 				}
 			}
 		}
-
-		for (int i = 0; i < basisSize; i++)
-		{
-			for (int j = 0; j < DEG; j++)
-			{
-				std::cout << equationBasis[i][j] << " ";
-			}
-			std::cout << std::endl;
-		}
-		std::cout << std::endl;
-
 		p[i]--;
 	}
 
@@ -288,6 +294,12 @@ double** getEquationBasis(double** a, const int n)
 
 double** getSumBasis(double** a, double** b, const int n, const int m)
 {
+	if (a == nullptr
+		|| b == nullptr)
+	{
+		return nullptr;
+	}
+
 	getBasis(a, n);
 
 	getBasis(b, m);
@@ -313,18 +325,9 @@ double** getSumBasis(double** a, double** b, const int n, const int m)
 		}
 	}
 
-	for (int i = 0; i < rangA + rangE; i++)
-	{
-		for (int j = 0; j < DEG; j++)
-		{
-			std::cout << sumBasis[i][j] << " ";
-		}
-		std::cout << std::endl;
-	}
-
-	std::cout << std::endl;
-
 	getBasis(sumBasis, rangA + rangE);
+
+	deleteMatrix(equationBasis);
 
 	return sumBasis;
 }
@@ -336,13 +339,13 @@ int main()
 
 	double matrixA[][DEG] =
 	{
-		{2,8,-3,14},
-		{-1,2,3,5},
-		{-1,14,6,29 },
+		{2, 8, -3, 14},
+		{-1, 2, 3, 5},
+		{-1, 14, 6, 29},
 		{0, 12, 3, 24}
 	};
 
-	double** a = createMatrix(n+1, DEG);
+	double** a = createMatrix(n + 1, DEG);
 	for (int i = 0; i < n; i++)
 	{
 		a[i] = matrixA[i];
@@ -354,13 +357,18 @@ int main()
 		{10,7,0,-8}
 	};
 
-	double** b = createMatrix(m+1, DEG);
+	double** b = createMatrix(m + 1, DEG);
 	for (int i = 0; i < m; i++)
 	{
 		b[i] = matrixB[i];
 	}
 
 	double** sumBasis = getSumBasis(a, b, n, m);
+
+	if (sumBasis == nullptr)
+	{
+		std::cout << "-1";
+	}
 
 	for (int i = 0; i < getRang(sumBasis); i++)
 	{
@@ -370,4 +378,8 @@ int main()
 		}
 		std::cout << std::endl;
 	}
+
+	delete[] a;
+	delete[] b;
+	deleteMatrix(sumBasis);
 }

@@ -1,3 +1,17 @@
+/**
+*
+* Solution to homework assignment 4
+* Introduction to programming course
+* Faculty of Mathematics and Informatics of Sofia University
+* Winter semester 2021/2022
+*
+* @author Svetlozar Stefanov
+* @idnumber 4MI0600030
+* @task 1
+* @compiler VC
+*
+*/
+
 #include <iostream>
 
 int strleng(const char* str)
@@ -54,6 +68,12 @@ void deleteMatrix(char** matrix, const int rows)
 
 bool equal(const char * str1, const char * str2) 
 {
+    if (str1 == nullptr
+        || str2 == nullptr)
+    {
+        return false;
+    }
+
     unsigned ln1 = strleng(str1);
     unsigned ln2 = strleng(str2);
     if (ln1!=ln2)
@@ -74,6 +94,12 @@ bool equal(const char * str1, const char * str2)
 
 bool contains(const char * str, char** permutations, const unsigned nP)
 {
+    if (str == nullptr
+        || permutations == nullptr)
+    {
+        return false;
+    }
+
     for (int i = 0; i < nP; i++)
     {
         if (permutations[i] != nullptr && equal(permutations[i], str))
@@ -87,6 +113,11 @@ bool contains(const char * str, char** permutations, const unsigned nP)
 
 char* copy(const char* str)
 {
+    if (str == nullptr)
+    {
+        return nullptr;
+    }
+
     unsigned ln = strleng(str);
     char* newStr = new char[ln + 1];
     newStr[ln] = '\0';
@@ -101,6 +132,12 @@ char* copy(const char* str)
 
 void getPermutations(char* str, const int index, int &pI, char** permutations, const unsigned nP) 
 {
+    if (str == nullptr
+        || permutations == nullptr)
+    {
+        return;
+    }
+
     permutations[pI] = copy(str);
 
     for (int i = index; i < strleng(str); i++)
@@ -125,6 +162,11 @@ void getPermutations(char* str, const int index, int &pI, char** permutations, c
 
 void sortLexicographically(char** permutations, const unsigned nP)
 {
+    if (permutations == nullptr)
+    {
+        return;
+    }
+
     for (int i = 0; i < nP; i++)
     {
         for (int j = 0; j < nP - i - 1; j++)
