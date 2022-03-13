@@ -68,6 +68,8 @@ void save(const char* fileName, Student* students, const int num)
 			file << students[i].Name << "," << students[i].Surname << "," << students[i].Email << "," << students[i].Fn << '\n';
 		}
 	}
+
+	file.close();
 }
 
 int main()
@@ -138,6 +140,8 @@ int main()
 			copy(students[num++].Fn, fNum);
 		}
 	}
+
+	file.close();
 
 	print("80000", students, num);
 	edit("80001", "kuncho.org", students, num);
