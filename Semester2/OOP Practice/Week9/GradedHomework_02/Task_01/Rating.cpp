@@ -1,0 +1,49 @@
+#include "Rating.h"
+#include "Functions.h"
+
+Rating::Rating()
+{
+	author = new char[1];
+	author[0] = '\0';
+	rating = 0;
+}
+
+Rating::Rating(const char* author, const unsigned int rating)
+{
+	this->author = copy(author);
+	this->rating = rating;
+}
+
+Rating::Rating(const Rating& nRat)
+{
+	this->author = nRat.author;
+	this->rating = nRat.rating;
+}
+
+Rating& Rating::operator=(const Rating& nRat)
+{
+	this->author = copy(nRat.author);
+	this->rating = nRat.rating;
+
+	return *this;
+}
+
+unsigned int Rating::GetRatingValue()
+{
+	return rating;
+}
+
+void Rating::SetRatingValue(const float newRating)
+{
+	rating = newRating;
+}
+
+bool Rating::IsCreatedBy(const char* author)
+{
+	return compare(this->author, author);
+}
+
+char* Rating::ShowRating()
+{
+	return append(author,'-',numToStr(rating));
+}
