@@ -7,7 +7,8 @@ public:
 	Rating(const Rating&);
 	Rating& operator=(const Rating&);
 
-	unsigned int GetRatingValue();
+	const unsigned int GetRatingValue() const;
+	const char const* GetAuthor() const;
 	void SetRatingValue(const float newRating);
 	bool IsCreatedBy(const char* author);
 

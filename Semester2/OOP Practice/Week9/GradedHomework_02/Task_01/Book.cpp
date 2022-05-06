@@ -76,18 +76,43 @@ char const* Book::GetTitle() const
 	return title;
 }
 
+char const* Book::GetAuthor() const
+{
+	return author;
+}
+
+myVector<Rating*>* Book::GetRatings()
+{
+	return &ratings;
+}
+
+myVector<Comment*>* Book::GetComments()
+{
+	return &comments;
+}
+
+myVector<Page*>* Book::GetPages()
+{
+	return &pages;
+}
+
 char* Book::displayPage()
 {
 	char* pageContents = nullptr;
 	if (pageIndx >= 0 && pageIndx < pages.GetSize())
 	{
+		Page* page = pages[pageIndx];
+		if (page == nullptr)
+		{
+			return nullptr;
+		}
 		pageContents = pages[pageIndx]->GetPageContents();
 	}
 
 	return pageContents;
 }
 
-const float Book::GetRating()
+float Book::GetAvgRating() const
 {
 	float avgRating = 0.0f;
 	for (int i = 0; i < ratings.GetSize(); i++)
@@ -127,20 +152,22 @@ char* Book::Open()
 
 char* Book::TurnPage()
 {
-	if (pageIndx >= 0 && pageIndx < pages.GetSize())
+	if (pageIndx >= 0 && pageIndx < pages.GetSize() - 1)
 	{
 		pageIndx++;
 		return displayPage();
 	}
+	return nullptr;
 }
 
 char* Book::TurnBackPage()
 {
-	if (pageIndx >= 0 && pageIndx < pages.GetSize())
+	if (pageIndx > 0)
 	{
 		pageIndx--;
 		return displayPage();
 	}
+	return nullptr;
 }
 
 char* Book::MoveToPage(const unsigned pageNumber)
@@ -150,30 +177,35 @@ char* Book::MoveToPage(const unsigned pageNumber)
 		pageIndx = pageNumber;
 		return displayPage();
 	}
+
+	return nullptr;
 }
 
 void Book::AddPage()
 {
-	Page* newPage = new Page(pages.GetSize(), "\0");
+	Page* newPage = new Page(pages.GetSize() + 1, "\0");
 	pages.Add(newPage);
 }
 
 void Book::AddPage(const char* content)
 {
-	Page* newPage = new Page(pages.GetSize(), content);
+	Page* newPage = new Page(pages.GetSize() + 1, content);
 	pages.Add(newPage);
 }
 
-bool Book::EditPage(const unsigned int num, const char* user, const char* newContent)
+void Book::EditPage(const unsigned int num, const char* user, const char* newContent)
 {
+	if (user == nullptr || newContent == nullptr)
+	{
+		return;
+	}
+
 	if (!compare(user, author))
 	{
-		return false;
+		return;
 	}
 
 	pages[num]->Edit(newContent);
-
-	return true;
 }
 
 void Book::AddComment(const char* author, const char* content)
@@ -190,7 +222,7 @@ void Book::AddComment(const char* author, const char* content)
 
 char* Book::ShowComments() const
 {
-	if (comments.GetSize() < 0)
+	if (comments.GetSize() <= 0)
 	{
 		return nullptr;
 	}
@@ -201,13 +233,16 @@ char* Book::ShowComments() const
 		output = append(output, '\n', comments[i]->ShowComment());
 		delete[] temp;
 	}
+	char* temp = output;
+	output = append(output, "\n");
+	delete temp;
 
 	return output;
 }
 
 void Book::AddRating(const char* author, const unsigned int rating)
 {
-	if (rating < 0 || rating > 10)
+	if (rating < 0 || rating > 10 || author == nullptr)
 	{
 		return;
 	}
@@ -219,17 +254,21 @@ void Book::AddRating(const char* author, const unsigned int rating)
 
 char* Book::ShowRatings() const
 {
-	if (ratings.GetSize() < 0)
+	if (ratings.GetSize() <= 0)
 	{
 		return nullptr;
 	}
-	char* output = append("Avg -", ratings[0]->ShowRating());
-	for (int i = 1; i < ratings.GetSize(); i++)
+	int avg = (int)GetAvgRating();
+	char* output = append("Avg - ",  numToStr(avg));
+	for (int i = 0; i < ratings.GetSize(); i++)
 	{
 		char* temp = output;
 		output = append(output, '\n', ratings[i]->ShowRating());
 		delete[] temp;
 	}
+	char* temp = output;
+	output = append(output, "\n");
+	delete[] temp;
 
 	return output;
 }

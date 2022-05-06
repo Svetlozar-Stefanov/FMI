@@ -23,8 +23,8 @@ Comment::Comment(const Comment& refComment)
 
 Comment& Comment::operator=(const Comment& refComment)
 {
-	this->author = refComment.author;
-	this->content = refComment.content;
+	this->author = copy(refComment.author);
+	this->content = copy(refComment.content);
 
 	return *this;
 }
@@ -40,6 +40,16 @@ Comment::~Comment()
 	{
 		delete[] content;
 	}
+}
+
+char const* Comment::GetAuthor() const
+{
+	return author;
+}
+
+char const* Comment::GetRawContent() const
+{
+	return content;
 }
 
 char* Comment::ShowComment()

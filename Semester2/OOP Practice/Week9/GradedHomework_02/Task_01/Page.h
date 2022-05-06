@@ -8,6 +8,9 @@ public:
 	Page& operator=(const Page&);
 	~Page();
 
+	const char const* GetRawContent() const;
+	const unsigned GetPageNumber() const;
+
 	char* GetPageContents();
 	void Edit(const char * newContent);
 

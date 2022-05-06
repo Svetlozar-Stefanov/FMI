@@ -8,6 +8,9 @@ public:
 	Comment& operator=(const Comment&);
 	~Comment();
 
+	const char const* GetAuthor() const;
+	const char const* GetRawContent() const;
+
 	char* ShowComment();
 private:
 	char* author;

@@ -5,19 +5,20 @@ User::User()
 {
 	username = new char[1];
 	username[0] = '\0';
-	password = -1;
+	password = new char[1];
+	password[0] = '\0';
 }
 
-User::User(const char* username, const size_t password)
+User::User(const char* username, const char* password)
 {
 	this->username = copy(username);
-	this->password = password;
+	this->password = copy(password);
 }
 
-User::User(const char* username, const size_t password, const myVector<unsigned int>& readBooks, const myVector<unsigned int>& writtenBooks)
+User::User(const char* username, const char* password, const myVector<unsigned int>& readBooks, const myVector<unsigned int>& writtenBooks)
 {
 	this->username = copy(username);
-	this->password = password;
+	this->password = copy(password);
 	this->readBooks = readBooks;
 	this->writtenBooks = writtenBooks;
 }
@@ -33,7 +34,7 @@ User::User(const User& user)
 User& User::operator=(const User& user)
 {
 	this->username = copy(user.username);
-	this->password = user.password;
+	this->password = copy(user.password);
 	this->readBooks = user.readBooks;
 	this->writtenBooks = user.writtenBooks;
 
@@ -53,48 +54,70 @@ const char const* User::GetUsername() const
 	return username;
 }
 
-bool User::IdentityCompare(const char* username, const size_t password)
+char const* User::GetPassword() const
 {
-	if (compare(this->username, username) && this->password == password)
+	return password;
+}
+
+myVector<unsigned int>* User::GetReadBooks()
+{
+	return &readBooks;
+}
+
+myVector<unsigned int>* User::GetWrittenBooks()
+{
+	return &writtenBooks;
+}
+
+bool User::IdentityCompare(const char* username, const char * password)
+{
+	if (compare(this->username, username) && compare(this->password, password))
 	{
 		return true;
 	}
 	return false;
 }
 
-void User::Read(Book book)
+char* User::Read(Book* book)
 {
 	currentBook = book;
-	currentBook.Open();
-}
-
-void User::TurnPage()
-{
-	currentBook.TurnPage();
-
-	if (currentBook.IsFinished())
+	if (currentBook->IsFinished() && !contains(readBooks, currentBook->GetId()))
 	{
-		readBooks.Add(currentBook.GetId());
+		readBooks.Add(currentBook->GetId());
 	}
+	return currentBook->Open();
 }
 
-void User::TurnBackPage()
+char* User::TurnPage()
 {
-	currentBook.TurnBackPage();
-}
+	char * page = currentBook->TurnPage();
 
-void User::NavigateTo(const unsigned int page)
-{
-	currentBook.MoveToPage(page);
-	if (currentBook.IsFinished())
+	if (page != nullptr && currentBook->IsFinished() && !contains(readBooks, currentBook->GetId()))
 	{
-		readBooks.Add(currentBook.GetId());
+		readBooks.Add(currentBook->GetId());
 	}
+
+	return page;
+}
+
+char* User::TurnBackPage()
+{
+	return currentBook->TurnBackPage();
+}
+
+char * User::NavigateTo(const unsigned int page)
+{
+	char * pageContents = currentBook->MoveToPage(page);
+	if (pageContents != nullptr && currentBook->IsFinished() && !contains(readBooks, currentBook->GetId()))
+	{
+		readBooks.Add(currentBook->GetId());
+	}
+	return pageContents;
 }
 
 Book* User::CreateNewBook(const unsigned int id, const char* title, const unsigned int initialPages, myVector<char*>& contents)
 {
-	Book* newBook = new Book(id, username, title);
+	Book* newBook = new Book(id, title, username);
 
 	for (int i = 0; i < initialPages; i++)
 	{
@@ -106,26 +129,42 @@ Book* User::CreateNewBook(const unsigned int id, const char* title, const unsign
 		newBook->AddPage();
 	}
 
+	writtenBooks.Add(newBook->GetId());
+
 	return newBook;
 }
 
-void User::AddPage(const char* contents, Book * book)
+bool User::AddPage(const char* contents, Book * book)
 {
+	if (book == nullptr)
+	{
+		return false;
+	}
+
 	if (!contains(writtenBooks, book->GetId()))
 	{
-		return;
+		return false;
 	}
 	book->AddPage(contents);
+
+	return true;
 }
 
-void User::EditPage(const unsigned int num, const char* newContent, Book * book)
+bool User::EditPage(const unsigned int num, const char* newContent, Book* book)
 {
+	if (newContent == nullptr || book == nullptr)
+	{
+		return false;
+	}
+
 	if (!contains(writtenBooks, book->GetId()))
 	{
-		return;
+		return false;
 	}
 
 	book->EditPage(num, username, newContent);
+
+	return true;
 }
 
 char* User::ReadComments(const Book& book)
@@ -133,34 +172,39 @@ char* User::ReadComments(const Book& book)
 	return book.ShowComments();
 }
 
-void User::Comment(Book *book, const char* comment)
+bool User::Comment(Book *book, const char* comment)
 {
-	if(!contains(readBooks, book->GetId()))
+	if(!contains(readBooks, book->GetId()) || contains(writtenBooks, book->GetId()))
 	{
-		return;
+		return false;
 	}
 
 	book->AddComment(username, comment);
+
+	return true;
 }
 
-void User::Rate(Book* book, const unsigned newRating)
+bool User::Rate(Book* book, const unsigned newRating)
 {
 	if (!contains(readBooks, book->GetId()) || contains(writtenBooks, book->GetId()))
 	{
-		return;
+		return false;
 	}
 
 	book->AddRating(username, newRating);
+	return true;
 }
 
-void User::EditRating(Book* book, const unsigned newRating)
+bool User::EditRating(Book* book, const unsigned newRating)
 {
 	if (!contains(readBooks, book->GetId()) || contains(writtenBooks, book->GetId()))
 	{
-		return;
+		return false;
 	}
 
 	book->ChangeRating(username, newRating);
+
+	return true;
 }
 
 char* User::ViewRatings(const Book& book)

@@ -28,9 +28,14 @@ Rating& Rating::operator=(const Rating& nRat)
 	return *this;
 }
 
-unsigned int Rating::GetRatingValue()
+const unsigned int Rating::GetRatingValue() const
 {
 	return rating;
+}
+
+char const* Rating::GetAuthor() const
+{
+	return author;
 }
 
 void Rating::SetRatingValue(const float newRating)

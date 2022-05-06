@@ -13,43 +13,47 @@ public:
 	~myVector();
 	
 	void Add(T newEl);
-	//void Add(T &newEl);
 	void Last();
-	unsigned int GetSize() const;
+	int GetSize() const;
 
 private:
 	T* arr;
-	unsigned int index;
+	int index;
 };
 
 template<class T>
 inline myVector<T>::myVector()
 {
 	arr = new T[MAX_SIZE];
-	index = 0;
+	index = -1;
 }
 
 template<class T>
 inline myVector<T>::myVector(T* arr, const int lastIndex)
 {
-	this->arr = arr;
+	for (int i = 0; i < arr.GetSize(); i++)
+	{
+		this->arr[i] = arr[i];
+	}
 	index = lastIndex;
 }
 
 template<class T>
 inline myVector<T>::myVector(const myVector& newVec)
 {
-	this->arr = newVec.arr;
+	for (int i = 0; i < newVec.GetSize(); i++)
+	{
+		arr[i] = newVec[i];
+	}
 	this->index = newVec.index;
 }
 
 template<class T>
 inline myVector<T>& myVector<T>::operator=(const myVector& newVec)
 {
-	if (arr != nullptr)
+	for (int i = 0; i < newVec.GetSize(); i++)
 	{
-		delete[] arr;
-		this->arr = newVec.arr;
+		arr[i] = newVec[i];
 	}
 	
 	this->index = newVec.index;
@@ -78,6 +82,10 @@ inline myVector<T>::~myVector()
 template<class T>
 inline void myVector<T>::Add(T newEl)
 {
+	if (index == -1)
+	{
+		index = 0;
+	}
 	if (index < MAX_SIZE - 1)
 	{
 		arr[index] = newEl;
@@ -102,7 +110,11 @@ inline void myVector<T>::Last()
 }
 
 template<class T>
-inline unsigned int myVector<T>::GetSize() const
+inline int myVector<T>::GetSize() const
 {
-	return index + 1;
+	if (index == -1)
+	{
+		return 0;
+	}
+	return index;
 }

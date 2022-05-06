@@ -16,7 +16,7 @@ public:
 
 	void View();
 
-	bool Comment(const char * bookName, const char * comment);
+	bool WriteComment(const char * bookName, const char * comment);
 	bool ReadComments(const char * bookName);
 
 	bool Rate(const char * bookName, const unsigned int rating);
@@ -36,8 +36,11 @@ private:
 
 	User* currentUser;
 
-	myVector<User*> readUsers(const char * fileName);
-	myVector<Book*> readBooks();
+	void saveUsers(const char* fileName);
+	void saveBooks(const char* fileName);
+
+	void readUsers(const char * fileName);
+	void readBooks(const char* fileName);
 
 	bool contains(const char* username);
 	bool isUnique(const char* username);
@@ -46,5 +49,8 @@ private:
 	unsigned int getBookId(const char* title);
 
 	void loggedInUserInterface();
+
+	char* getPage();
+	myVector<char*>* getPages(const unsigned int numberOfPages);
 };
 

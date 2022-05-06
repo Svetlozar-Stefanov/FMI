@@ -23,7 +23,7 @@ Page::Page(const Page& page)
 Page& Page::operator=(const Page& page)
 {
 	this->pageNumber = page.pageNumber;
-	this->content = page.content;
+	this->content = copy(page.content);
 
 	return *this;
 }
@@ -34,6 +34,16 @@ Page::~Page()
 	{
 		delete[] content;
 	}
+}
+
+char const* Page::GetRawContent() const
+{
+	return content;
+}
+
+const unsigned Page::GetPageNumber() const
+{
+	return pageNumber;
 }
 
 char* Page::GetPageContents()

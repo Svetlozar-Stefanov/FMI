@@ -30,13 +30,14 @@ unsigned digitsCount(int n)
 char* numToStr(int n)
 {
 	int size = digitsCount(n);
-	char* sNum = new char[size];
+	char* sNum = new char[size+1];
 
 	for (int i = size - 1; i >= 0; i--)
 	{
-		sNum[i] = n % 10;
+		sNum[i] = (n % 10) + '0';
 		n /= 10;
 	}
+	sNum[size] = '\0';
 
 	return sNum;
 }
@@ -87,14 +88,18 @@ char* append(const char* str1, const char* str2)
 
 char* append(const char* str1, const char filler, const char* str2)
 {
+	if (str1 == nullptr || str2 == nullptr)
+	{
+		return nullptr;
+	}
+
 	int size = strleng(str1) + strleng(str2) + 2;
 	char* newStr = new char[size];
 	int index = 0;
 
 	for (int i = 0; i < strleng(str1); i++)
 	{
-		newStr[index] = str1[i];
-		index++;
+		newStr[index++] = str1[i];
 	}
 
 	newStr[index++] = filler;
@@ -157,7 +162,7 @@ bool contains(const myVector<unsigned int> &arr, const unsigned int n)
 		}
 	}
 
-	return true;
+	return false;
 }
 
 myVector<char*>* parse(const char* str, const char passEl, const unsigned int wordSize)

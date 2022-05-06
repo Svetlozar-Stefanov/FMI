@@ -21,7 +21,11 @@ public:
 	unsigned int GetId() const;
 	const char const* GetTitle() const; 
 	const char const* GetAuthor() const;
-	const float GetRating();
+	myVector<Rating*>* GetRatings();
+	myVector<Comment*>* GetComments();
+	myVector<Page*>* GetPages();
+
+	float GetAvgRating() const;
 
 	const bool IsFinished();
 
@@ -33,7 +37,7 @@ public:
 
 	void AddPage();
 	void AddPage(const char * content);
-	bool EditPage(const unsigned int num, const char* user, const char* newContent);
+	void EditPage(const unsigned int num, const char* user, const char* newContent);
 	
 	void AddComment(const char* author, const char* content);
 	char* ShowComments() const;
