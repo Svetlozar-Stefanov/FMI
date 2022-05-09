@@ -1,4 +1,6 @@
 #pragma once
+#include<fstream>
+
 class Page
 {
 public:
@@ -13,6 +15,8 @@ public:
 
 	char* GetPageContents();
 	void Edit(const char * newContent);
+
+	friend std::ofstream& operator<<(std::ofstream& file, const Page&);
 
 private:
 	unsigned pageNumber;

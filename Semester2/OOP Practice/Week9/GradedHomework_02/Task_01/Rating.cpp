@@ -16,7 +16,7 @@ Rating::Rating(const char* author, const unsigned int rating)
 
 Rating::Rating(const Rating& nRat)
 {
-	this->author = nRat.author;
+	this->author = copy(nRat.author);
 	this->rating = nRat.rating;
 }
 
@@ -51,4 +51,12 @@ bool Rating::IsCreatedBy(const char* author)
 char* Rating::ShowRating()
 {
 	return append(author,'-',numToStr(rating));
+}
+
+std::ofstream& operator<<(std::ofstream& file, const Rating& rating)
+{
+	file << rating.author << ' ';
+	file << rating.rating << '\n';
+
+	return file;
 }

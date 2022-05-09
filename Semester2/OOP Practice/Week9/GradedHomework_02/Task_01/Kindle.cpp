@@ -249,7 +249,7 @@ bool Kindle::Read(const char* bookName)
 		return false;
 	}
 
-	char* output = currentUser->Read(book);
+	char* output = currentUser->Read(*book);
 	if (output != nullptr)
 	{
 		std::cout << output;
@@ -297,8 +297,8 @@ bool Kindle::Read(const char* bookName)
 
 void Kindle::saveUsers(const char* fileName)
 {
-	std::fstream file;
-	file.open(fileName, std::fstream::out);
+	std::ofstream file;
+	file.open(fileName);
 
 	if (!file.is_open())
 	{
@@ -309,7 +309,7 @@ void Kindle::saveUsers(const char* fileName)
 
 	for (int i = 0; i < users.GetSize(); i++)
 	{
-		file << users[i]->GetUsername() << ' ';
+		/*file << users[i]->GetUsername() << ' ';
 		file << users[i]->GetPassword() << ' ';
 
 		myVector<unsigned> *read = users[i]->GetReadBooks();
@@ -326,15 +326,17 @@ void Kindle::saveUsers(const char* fileName)
 			file << written->operator[](j) << ' ';
 		}
 
-		file << '\n';
+		file << '\n';*/
+
+		file << *users[i];
 	}
 	file.close();
 }
 
 void Kindle::saveBooks(const char* fileName)
 {
-	std::fstream file;
-	file.open(fileName, std::fstream::out);
+	std::ofstream file;
+	file.open(fileName);
 
 	if (!file.is_open())
 	{
@@ -345,7 +347,7 @@ void Kindle::saveBooks(const char* fileName)
 
 	for (int i = 0; i < books.GetSize(); i++)
 	{
-		file << books[i]->GetId() << '\n';
+		/*file << books[i]->GetId() << '\n';
 		file << books[i]->GetTitle() << '\n';
 		file << books[i]->GetAuthor() << '\n';
 
@@ -376,7 +378,9 @@ void Kindle::saveBooks(const char* fileName)
 			file << comments->operator[](j)->GetRawContent() << '\n';
 		}
 
-		file << '\n';
+		file << '\n';*/
+
+		file << *books[i];
 	}
 	file.close();
 }
@@ -589,14 +593,21 @@ unsigned int Kindle::getBookId(const char* title)
 
 void Kindle::loggedInUserInterface()
 {
-	std::cout << "( read | write | add_page | add_pages | edit_page | write_comment | read_comments | rate | change_rating | view_ratings | logout )\n";
+	std::cout << "( view | read | write | add_page | add_pages | edit_page | write_comment | read_comments | rate | change_rating | view_ratings | logout )\n";
 	std::cout << ">";
 	char input[MAX_INPUT];
 	std::cin >> input;
 
 	while (!compare(input, "logout"))
 	{
-		if (compare(input, "read"))
+		if (compare(input, "view"))
+		{
+			for (int i = 0; i < books.GetSize(); i++)
+			{
+				std::cout << books[i]->GetTitle() << " by " << books[i]->GetAuthor() << '\n';
+			}
+		}
+		else if (compare(input, "read"))
 		{
 			char title[MAX_INPUT];
 			std::cout << "Enter book name: ";
@@ -784,7 +795,7 @@ void Kindle::loggedInUserInterface()
 		}
 
 
-		std::cout << "( read | write | add_page | add_pages | edit_page | write_comment | read_comment | rate | change_rating | view_ratings | logout )\n";
+		std::cout << "( read | write | add_page | add_pages | edit_page | write_comment | read_comments | rate | change_rating | view_ratings | logout )\n";
 		std::cout << ">";
 		std::cin >> input;
 	}

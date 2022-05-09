@@ -4,6 +4,7 @@
 Book::Book()
 {
 	id = 0;
+	pageIndx = 0;
 	title = new char[1];
 	title[0] = '\0';
 	author = new char[1];
@@ -33,8 +34,8 @@ Book::Book(const unsigned int id, const char* title, const char* author)
 Book::Book(const Book& book)
 {
 	this->id = book.id;
-	this->title = book.title;
-	this->author = book.author;
+	this->title = copy(book.title);
+	this->author = copy(book.author);
 	this->ratings = book.ratings;
 	this->pages = book.pages;
 	this->pageIndx = 0;
@@ -282,4 +283,40 @@ void Book::ChangeRating(const char* author, const unsigned int newRating)
 			ratings[i]->SetRatingValue(newRating);
 		}
 	}
+}
+
+std::ofstream& operator<<(std::ofstream& file, const Book& book)
+{
+	file << book.id << '\n';
+	file << book.title << '\n';
+	file << book.author << '\n';
+
+	file << '\n';
+
+	myVector<Rating*> ratings;
+	ratings = book.ratings;
+	file << ratings.GetSize() << '\n';
+	for (int j = 0; j < ratings.GetSize(); j++)
+	{
+		file << *ratings[j];
+	}
+
+	myVector<Page*> pages;
+	pages = book.pages;
+	file << pages.GetSize() << '\n';
+	for (int j = 0; j < pages.GetSize(); j++)
+	{
+		file << *pages[j];
+	}
+	myVector<Comment*> comments;
+	comments = book.comments;
+	file << comments.GetSize() << '\n';
+	for (int j = 0; j < comments.GetSize(); j++)
+	{
+		file << *comments[j];
+	}
+
+	file << '\n';
+
+	return file;
 }

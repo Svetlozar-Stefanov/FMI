@@ -1,4 +1,6 @@
 #pragma once
+#include<fstream>
+
 class Rating
 {
 public:
@@ -13,6 +15,8 @@ public:
 	bool IsCreatedBy(const char* author);
 
 	char* ShowRating();
+
+	friend std::ofstream& operator<<(std::ofstream& file, const Rating&);
 
 private:
 	char* author;

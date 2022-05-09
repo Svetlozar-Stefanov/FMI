@@ -1,6 +1,7 @@
 #pragma once
 #include "Book.h"
 #include "myVector.h"
+#include <fstream>
 
 class User
 {
@@ -19,7 +20,7 @@ public:
 	
 	bool IdentityCompare(const char* username, const char* password);
 
-	char* Read(Book* book);
+	char* Read(const Book &book);
 	char* TurnPage();
 	char* TurnBackPage();
 	char* NavigateTo(const unsigned int page);
@@ -35,11 +36,13 @@ public:
 	bool EditRating(Book *book, const unsigned newRating);
 	char* ViewRatings(const Book& book);
 
+	friend std::ofstream& operator<<(std::ofstream& file, const User&);
+
 private:
 	char* username;
 	char* password;
 	myVector<unsigned int> readBooks;
 	myVector<unsigned int> writtenBooks;
-	Book *currentBook;
+	Book currentBook;
 };
 

@@ -17,7 +17,7 @@ Page::Page(const int pageNumber, const char* newContent)
 Page::Page(const Page& page)
 {
 	this->pageNumber = page.pageNumber;
-	this->content = page.content;
+	this->content = copy(page.content);
 }
 
 Page& Page::operator=(const Page& page)
@@ -53,7 +53,7 @@ char* Page::GetPageContents()
 	char* output = append(pageInx, '\n', content);
 
 	delete pageInx;
-
+	
 	return output;
 }
 
@@ -65,4 +65,13 @@ void Page::Edit(const char* newContent)
 	}
 
 	content = copy(newContent);
+}
+
+std::ofstream& operator<<(std::ofstream& file, const Page& page)
+{
+	file << page.content;
+	file << "/end_page\n";
+	file << page.pageNumber << '\n';
+
+	return file;
 }

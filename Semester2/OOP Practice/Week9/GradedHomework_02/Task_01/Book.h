@@ -3,6 +3,7 @@
 #include "Page.h";
 #include "Rating.h"
 #include "myVector.h"
+#include <fstream>
 
 class Book
 {
@@ -45,6 +46,8 @@ public:
 	void AddRating(const char* author, const unsigned int rating);
 	char* ShowRatings() const;
 	void ChangeRating(const char* author, const unsigned int newRating);
+
+	friend std::ofstream& operator<<(std::ofstream &file, const Book&);
 
 private:
 	unsigned int id;

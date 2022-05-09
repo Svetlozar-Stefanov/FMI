@@ -1,4 +1,6 @@
 #pragma once
+#include <fstream>
+
 class Comment
 {
 public:
@@ -12,6 +14,8 @@ public:
 	const char const* GetRawContent() const;
 
 	char* ShowComment();
+
+	friend std::ofstream& operator<<(std::ofstream& file, const Comment&);
 private:
 	char* author;
 	char* content;

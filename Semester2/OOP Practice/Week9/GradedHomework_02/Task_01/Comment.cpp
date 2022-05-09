@@ -17,8 +17,8 @@ Comment::Comment(const char* author, const char* comment)
 
 Comment::Comment(const Comment& refComment)
 {
-	this->author = refComment.author;
-	this->content = refComment.content;
+	this->author = copy(refComment.author);
+	this->content = copy(refComment.content);
 }
 
 Comment& Comment::operator=(const Comment& refComment)
@@ -57,4 +57,12 @@ char* Comment::ShowComment()
 	char* output = append(author,'-', content);
 
 	return output;
+}
+
+std::ofstream& operator<<(std::ofstream& file, const Comment& comment)
+{
+	file << comment.author << '\n';
+	file << comment.content << '\n';
+
+	return file;
 }
