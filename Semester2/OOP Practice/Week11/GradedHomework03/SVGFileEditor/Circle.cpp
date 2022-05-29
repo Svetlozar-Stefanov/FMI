@@ -116,3 +116,12 @@ SVGElement* Circle::clone() const
 {
 	return new Circle(*this);
 }
+
+std::fstream& Circle::operator<<(std::fstream& st)
+{
+	st << "<circle " << "cx=\"" << origin.GetX() << "\"" << " cy=\"" << origin.GetY() << "\""
+		<< " r=\"" << r << "\""
+		<< " fill=\"" << fill << "\" />\n";
+
+	return st;
+}

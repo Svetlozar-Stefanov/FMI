@@ -67,6 +67,11 @@ svgString& svgString::operator=(const svgString& other)
 	return *this;
 }
 
+const char* const svgString::GetRaw() const
+{
+	return str;
+}
+
 const unsigned int svgString::GetLength() const
 {
 	if (index == 0)
@@ -155,6 +160,11 @@ char svgString::operator[](const unsigned int i) const
 		return '\0';
 	}
 	return str[i];
+}
+
+bool svgString::operator==(const char* str)
+{
+	return strcomp(this->str, str);
 }
 
 svgString::~svgString()

@@ -108,3 +108,23 @@ bool areEqual(const float n1, const float n2)
 	}
 	return false;
 }
+
+bool strcomp(const char* s1, const char* s2)
+{
+	int size1 = strleng(s1);
+	int size2 = strleng(s2);
+	if (size1 != size2)
+	{
+		return false;	
+	}
+
+	for (int i = 0; i < size1; i++)
+	{
+		if (s1[i] != s2[i])
+		{
+			return false;
+		}
+	}
+
+	return true;
+}

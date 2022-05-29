@@ -22,6 +22,7 @@ public:
 	svgString(const svgString& other);
 	svgString& operator=(const svgString& other);
 
+	const char* const GetRaw() const;
 	const unsigned int GetLength() const;
 
 	svgString& operator+(const svgString& other);
@@ -37,6 +38,8 @@ public:
 	void operator+=(const float other);
 
 	char operator[](const unsigned int i) const;
+
+	bool operator==(const char* str);
 
 	friend std::ostream& operator<<(std::ostream& os, const svgString& str);
 

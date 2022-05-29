@@ -1,5 +1,6 @@
 #pragma once
 #include "svgString.h"
+#include <fstream>
 #include <cmath>
 
 class SVGElement
@@ -25,4 +26,6 @@ public:
 	virtual float GetPerimeter() = 0;
 
 	virtual SVGElement* clone() const = 0;
+
+	virtual std::fstream& operator<<(std::fstream& st) = 0;
 };

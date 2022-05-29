@@ -1,5 +1,4 @@
 #pragma once
-#include <fstream>
 #include "SVGElement.h"
 
 class Editor
@@ -12,14 +11,17 @@ private:
 	void copy(const Editor& other);
 	void resize();
 
-	friend std::fstream& operator<<(std::fstream& s, const Editor& editor);
-	friend std::fstream& operator>>(std::fstream& s, const Editor& editor);
+	svgString* parse(const char* str, const char d);
+	svgString getInfo(const char* str);
+	float stof(const svgString& str);
 	
 public:
 	Editor();
 	Editor(const Editor& other);
 	Editor& operator=(const Editor& other);
 	~Editor();
+
+	void Start();
 
 	void Print() const;
 	bool Create(const SVGElement& newEl);
@@ -31,5 +33,7 @@ public:
 	void PointIn(const float x, const float y) const;
 	void Areas() const;
 	void Pers() const;
+	bool Open(const char* fileName);
+	bool Save(const char* fileName) const;
 };
 

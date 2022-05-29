@@ -117,3 +117,12 @@ SVGElement* Rectangle::clone() const
 {
 	return new Rectangle(*this);
 }
+
+std::fstream& Rectangle::operator<<(std::fstream& st)
+{
+	st << "<line " << "x=\"" << p[0].GetX() << "\"" << " y=\"" << p[0].GetY() << "\""
+		<< " width=\"" << width << "\"" << " height=\"" << height << "\""
+		<< " fill=\"" << fill << "\" />\n";
+
+	return st;
+}

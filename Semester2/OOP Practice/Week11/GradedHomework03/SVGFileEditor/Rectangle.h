@@ -30,5 +30,7 @@ public:
 	float GetPerimeter();
 
 	SVGElement* clone() const;
+
+	std::fstream& operator<<(std::fstream& st);
 };
 

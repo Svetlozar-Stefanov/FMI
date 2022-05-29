@@ -115,3 +115,12 @@ SVGElement* Line::clone() const
 {
 	return new Line(*this);
 }
+
+std::fstream& Line::operator<<(std::fstream& st)
+{
+	st << "<line " << "x1=\"" << a.GetX() << "\"" << " y1=\"" << a.GetY() << "\""
+		<< " x2=\"" << b.GetX() << "\"" << " y2=\"" << b.GetY() << "\"" 
+		<< " fill=\"" << fill << "\" />\n";
+
+	return st;
+}
