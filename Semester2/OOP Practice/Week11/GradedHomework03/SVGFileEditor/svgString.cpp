@@ -15,6 +15,17 @@ void svgString::addLetter(const char l)
 	}
 }
 
+void svgString::free()
+{
+	delete[] str;
+}
+
+void svgString::copyobj(const svgString& other)
+{
+	str = copy(other.str);
+	index = other.index;
+}
+
 void svgString::resize()
 {
 	MAX_STR_SIZE *= 2;
@@ -43,15 +54,16 @@ svgString::svgString(const char* str)
 
 svgString::svgString(const svgString& other)
 {
-	str = copy(other.str);
-	index = other.index;
+	copyobj(other);
 }
 
 svgString& svgString::operator=(const svgString& other)
 {
-	str = copy(other.str);
-	index = other.index;
-
+	if (this != &other)
+	{
+		free();
+		copyobj(other);
+	}
 	return *this;
 }
 
@@ -113,6 +125,24 @@ svgString& svgString::operator+(const int other)
 void svgString::operator+=(const int other)
 {
 	char* temp = itos(other);
+	operator+=(temp);
+
+	delete[] temp;
+}
+
+svgString& svgString::operator+(const float other)
+{
+	char* temp = ftos(other);
+	operator+=(temp);
+
+	delete[] temp;
+
+	return *this;
+}
+
+void svgString::operator+=(const float other)
+{
+	char* temp = ftos(other);
 	operator+=(temp);
 
 	delete[] temp;

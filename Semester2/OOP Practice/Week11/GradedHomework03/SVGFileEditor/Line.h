@@ -10,21 +10,23 @@ private:
 	Point b;
 
 public:
-	Line(const int x1, const int y1,
-		const int x2, const int y2, const svgString& fill);
+	Line(const float x1, const float y1,
+		const float x2, const float y2, const svgString& fill);
 
 	svgString GetInfo();
 
 	void Translate(const float horiz, const float vert);
 
-	bool IsWithinRegion(const int x, const int y, const int width, const int height);
+	bool IsWithinRegion(const float x, const float y, const float width, const float height);
 
-	bool IsWithinRegion(const int x, const int y, const int r);
+	bool IsWithinRegion(const float x, const float y, const float r);
 
-	bool ContainsPoint(const int x, const int y);
+	bool ContainsPoint(const float x, const float y);
 
 	float GetArea();
 
 	float GetPerimeter();
+
+	SVGElement* clone() const;
 };
 

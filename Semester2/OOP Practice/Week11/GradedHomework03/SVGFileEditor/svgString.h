@@ -11,6 +11,9 @@ private:
 	int index;
 
 	void addLetter(const char l);
+
+	void free();
+	void copyobj(const svgString& other);
 	void resize();
 
 public:
@@ -29,6 +32,9 @@ public:
 
 	svgString& operator+(const int other);
 	void operator+=(const int other);
+
+	svgString& operator+(const float other);
+	void operator+=(const float other);
 
 	char operator[](const unsigned int i) const;
 

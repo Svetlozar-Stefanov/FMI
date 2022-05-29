@@ -1,27 +1,33 @@
 #include "Point.h"
 
-Point::Point(const int x, const int y)
+Point::Point()
+{
+	x = 0.0f;
+	y = 0.0f;
+}
+
+Point::Point(const float x, const float y)
 {
 	SetX(x);
 	SetY(y);
 }
 
-void Point::SetX(const int x)
+void Point::SetX(const float x)
 {
 	this->x = x;
 }
 
-void Point::SetY(const int y)
+void Point::SetY(const float y)
 {
 	this->y = y;
 }
 
-const int Point::GetX() const
+const float Point::GetX() const
 {
 	return x;
 }
 
-const int Point::GetY() const
+const float Point::GetY() const
 {
 	return y;
 }

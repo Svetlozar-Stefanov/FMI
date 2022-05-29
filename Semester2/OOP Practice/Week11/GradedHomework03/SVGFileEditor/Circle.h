@@ -7,20 +7,24 @@ class Circle :
 {
 private:
     Point origin;
-	int r;
+	float r;
 public:
-    Circle(const int x, const int y, const int r, const svgString& fill);
+    Circle(const float x, const float y, const float r, const svgString& fill);
 
-	svgString getInfo();
+	svgString GetInfo();
 
 	void Translate(const float horiz, const float vert);
 
-	bool isWithinRegion();
+	bool IsWithinRegion(const float x, const float y, const float width, const float height);
 
-	bool ContainsPoint(const int x, const int y);
+	bool IsWithinRegion(const float x, const float y, const float r);
+
+	bool ContainsPoint(const float x, const float y);
 
 	float GetArea();
 
 	float GetPerimeter();
+
+	SVGElement* clone() const;
 };
 

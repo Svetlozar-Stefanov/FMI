@@ -1,8 +1,26 @@
 #include "Rectangle.h"
 
-Rectangle::Rectangle(const int x, const int y, const int width, const int height, const svgString& fill)
-	: origin(x, y), SVGElement(fill)
+Rectangle::Rectangle(const float x, const float y, const float width, const float height, const svgString& fill)
+	: SVGElement(fill)
 {
+	float x1 = x;
+	float x2 = x + width;
+
+	float y1 = y;
+	float y2 = y + height;
+
+	p[0].SetX(x1);
+	p[0].SetY(y1);
+
+	p[1].SetX(x2);
+	p[1].SetY(y1);
+
+	p[2].SetX(x1);
+	p[2].SetY(y2);
+
+	p[3].SetX(x2);
+	p[3].SetY(y2);
+
 	this->width = width;
 	this->height = height;
 }
@@ -11,9 +29,9 @@ svgString Rectangle::GetInfo()
 {
 	svgString str;
 	str += "rectangle x=";
-	str += origin.GetX();
+	str += p[0].GetX();
 	str += " y=";
-	str += origin.GetY();
+	str += p[0].GetY();
 	str += " width=";
 	str += width;
 	str += " height=";
@@ -26,85 +44,63 @@ svgString Rectangle::GetInfo()
 
 void Rectangle::Translate(const float horiz, const float vert)
 {
-	int newX = origin.GetX() + horiz;
-	int newY = origin.GetY() + vert;
-
-	origin.SetX(newX);
-	origin.SetY(newY);
+	for (int i = 0; i < NUMBER_OF_POINTS; i++)
+	{
+		p[i].SetX(p[i].GetX() + horiz);
+		p[i].SetY(p[i].GetY() + vert);
+	}
 }
 
-bool Rectangle::IsWithinRegion(const int x, const int y, const int width, const int height)
+bool Rectangle::IsWithinRegion(const float x, const float y, const float width, const float height)
 {
 	Rectangle rec(x, y, width, height, "");
 
-	int x1 = origin.GetX();
-	int x2 = origin.GetX() + width;
-
-	int y1 = origin.GetY();
-	int y2 = origin.GetY() + height;
-
-	if (!(rec.ContainsPoint(x1, y1)
-		&& rec.ContainsPoint(x2, y1)
-		&& rec.ContainsPoint(x1, y2)
-		&& rec.ContainsPoint(x2, y2)))
+	for (int i = 0; i < NUMBER_OF_POINTS; i++)
 	{
-		return false;
+		if (!rec.ContainsPoint(p[i].GetX(), p[i].GetY()))
+		{
+			return false;
+		}
 	}
 	
 	return true;
 }
 
-bool Rectangle::IsWithinRegion(const int x, const int y, const int r)
+bool Rectangle::IsWithinRegion(const float x, const float y, const float r)
 {
-	int x1 = origin.GetX();
-	int x2 = origin.GetX() + width;
-
-	int y1 = origin.GetY();
-	int y2 = origin.GetY() + height;
-
-	float distance1 = sqrt((x1 - x) * (x1 - x) + (y1 - y) * (y1 - y));
-	if (distance1 > r)
+	for (int i = 0; i < NUMBER_OF_POINTS; i++)
 	{
-		return false;
-	}
+		float rx = p[i].GetX();
+		float ry = p[i].GetY();
 
-	float distance2 = sqrt((x2 - x) * (x2 - x) + (y1 - y) * (y1 - y));
-	if (distance2 > r)
-	{
-		return false;
-	}
-
-	float distance3 = sqrt((x1 - x) * (x1 - x) + (y2 - y) * (y2 - y));
-	if (distance3 > r)
-	{
-		return false;
-	}
-
-	float distance4 = sqrt((x2 - x) * (x2 - x) + (y2 - y) * (y2 - y));
-	if (distance4 > r)
-	{
-		return false;
+		float distance = sqrt((rx - x) * (rx - x) + (ry - y) * (ry - y));
+		if (distance > r)
+		{
+			return false;
+		}
 	}
 
 	return true;
 }
 
-bool Rectangle::ContainsPoint(const int x, const int y)
+bool Rectangle::ContainsPoint(const float x, const float y)
 {
-	int x1 = origin.GetX();
-	int x2 = origin.GetX() + width;
+	float x1 = p[0].GetX();
+	float x2 = p[3].GetX();
 
-	int y1 = origin.GetY();
-	int y2 = origin.GetY() + height;
+	float y1 = p[0].GetY();
+	float y2 = p[0].GetY();
 
-	if (!(x < x1 && x > x2 || x < x2 && x > x1))
+	if (!((x >= x1 && x <= x2) || (x >= x2 && x <= x1)))
 	{
 		return false;
 	}
-	if (!(y < y1 && y > y2 || y < y2 && y > y2))
+	if (!((y >= y1 && y <= y2) || (y >= y2 && y <= y1)))
 	{
 		return false;
 	}
+
+	return true;
 }
 
 float Rectangle::GetArea()
@@ -115,4 +111,9 @@ float Rectangle::GetArea()
 float Rectangle::GetPerimeter()
 {
 	return 2 * width + 2 * height;
+}
+
+SVGElement* Rectangle::clone() const
+{
+	return new Rectangle(*this);
 }

@@ -2,16 +2,17 @@
 class Point
 {
 private:
-	int x;
-	int y;
+	float x;
+	float y;
 
 public:
-	Point(const int x, const int y);
+	Point();
+	Point(const float x, const float y);
 
-	void SetX(const int x);
-	void SetY(const int y);
+	void SetX(const float x);
+	void SetY(const float y);
 
-	const int GetX() const;
-	const int GetY() const;
+	const float GetX() const;
+	const float GetY() const;
 };
 

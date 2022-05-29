@@ -14,13 +14,15 @@ public:
 
 	virtual void Translate(const float horiz, const float vert) = 0;
 
-	virtual bool IsWithinRegion(const int x, const int y, const int width, const int height) = 0;
+	virtual bool IsWithinRegion(const float x, const float y, const float width, const float height) = 0;
 
-	virtual bool IsWithinRegion(const int x, const int y, const int r) = 0;
+	virtual bool IsWithinRegion(const float x, const float y, const float r) = 0;
 
-	virtual bool ContainsPoint(const int x, const int y) = 0;
+	virtual bool ContainsPoint(const float x, const float y) = 0;
 
 	virtual float GetArea() = 0;
 
 	virtual float GetPerimeter() = 0;
+
+	virtual SVGElement* clone() const = 0;
 };

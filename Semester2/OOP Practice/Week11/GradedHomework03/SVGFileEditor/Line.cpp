@@ -1,7 +1,7 @@
 #include "Line.h"
 
-Line::Line(const int x1, const int y1,
-		const int x2, const int y2,
+Line::Line(const float x1, const float y1,
+		const float x2, const float y2,
 		const svgString& fill)
 	: SVGElement(fill), a(x1, y1), b(x2, y2)
 {
@@ -26,10 +26,10 @@ svgString Line::GetInfo()
 
 void Line::Translate(const float horiz, const float vert)
 {
-	int newX1 = a.GetX() + horiz;
-	int newX2 = b.GetX() + horiz;
-	int newY1 = a.GetY() + vert;
-	int newY2 = b.GetY() + vert;
+	float newX1 = a.GetX() + horiz;
+	float newX2 = b.GetX() + horiz;
+	float newY1 = a.GetY() + vert;
+	float newY2 = b.GetY() + vert;
 
 	a.SetX(newX1);
 	a.SetY(newY1);
@@ -37,27 +37,27 @@ void Line::Translate(const float horiz, const float vert)
 	b.SetY(newY2);
 }
 
-bool Line::IsWithinRegion(const int x, const int y, const int width, const int height)
+bool Line::IsWithinRegion(const float x, const float y, const float width, const float height)
 {
 	int x1 = x;
 	int x2 = x + width;
 	int y1 = y;
 	int y2 = y + height;
 
-	if (!(a.GetX() < x1 && a.GetX() > x2 || a.GetX() < x2 && a.GetX() > x1))
+	if (!((a.GetX() >= x1 && a.GetX() <= x2) || (a.GetX() >= x2 && a.GetX() <= x1)))
 	{
 		return false;
 	}
-	if (!(a.GetY() < y1 && a.GetY() > y2 || a.GetY() < y2 && a.GetY() > y2))
+	if (!((a.GetY() >= y1 && a.GetY() <= y2) || (a.GetY() >= y2 && a.GetY() <= y1)))
 	{
 		return false;
 	}
 
-	if (!(b.GetX() < x1 && b.GetX() > x2 || b.GetX() < x2 && b.GetX() > x1))
+	if (!((b.GetX() >= x1 && b.GetX() <= x2) || (b.GetX() >= x2 && b.GetX() <= x1)))
 	{
 		return false;
 	}
-	if (!(b.GetY() < y1 && b.GetY() > y2 || b.GetY() < y2 && b.GetY() > y2))
+	if (!((b.GetY() >= y1 && b.GetY() <= y2) || (b.GetY() >= y2 && b.GetY() <= y1)))
 	{
 		return false;
 	}
@@ -65,7 +65,7 @@ bool Line::IsWithinRegion(const int x, const int y, const int width, const int h
 	return true;
 }
 
-bool Line::IsWithinRegion(const int x, const int y, const int r)
+bool Line::IsWithinRegion(const float x, const float y, const float r)
 {
 	float distance1 = sqrt((a.GetX() - x) * (a.GetX() - x) + (a.GetY() - y) * (a.GetY() - y));
 	if (distance1 > r)
@@ -83,13 +83,13 @@ bool Line::IsWithinRegion(const int x, const int y, const int r)
 }
 
 
-bool Line::ContainsPoint(const int x, const int y)
+bool Line::ContainsPoint(const float x, const float y)
 {
-	if (!(x < a.GetX() && x > b.GetX() || x < b.GetX() && x > b.GetX()))
+	if (!((x >= a.GetX() && x <= b.GetX()) || (x >= b.GetX() && x <= a.GetX())))
 	{
 		return false;
 	}
-	if (!(x < a.GetY() && x > b.GetY() || x < b.GetY() && x > b.GetY()))
+	if (!((y >= a.GetY() && y <= b.GetY()) || (y >= b.GetY() && y <= a.GetY())))
 	{
 		return false;
 	}
@@ -109,4 +109,9 @@ float Line::GetArea()
 float Line::GetPerimeter()
 {
 	return sqrt((b.GetX() - a.GetX()) * (b.GetX() - a.GetX()) + (b.GetY() - a.GetY()) * (b.GetY() - a.GetY()));
+}
+
+SVGElement* Line::clone() const
+{
+	return new Line(*this);
 }
