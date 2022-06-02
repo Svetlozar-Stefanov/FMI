@@ -17,7 +17,10 @@ void svgString::addLetter(const char l)
 
 void svgString::free()
 {
-	delete[] str;
+	if (str != nullptr)
+	{
+		delete[] str;
+	}
 }
 
 void svgString::copyobj(const svgString& other)
@@ -117,6 +120,20 @@ void svgString::operator+=(const char* other)
 	}
 }
 
+svgString& svgString::operator+(const char other)
+{
+	addLetter(other);
+	addLetter('\0');
+
+	return *this;
+}
+
+void svgString::operator+=(const char other)
+{
+	addLetter(other);
+	addLetter('\0');
+}
+
 svgString& svgString::operator+(const int other)
 {
 	char* temp = itos(other);
@@ -140,8 +157,6 @@ svgString& svgString::operator+(const float other)
 	char* temp = ftos(other);
 	operator+=(temp);
 
-	delete[] temp;
-
 	return *this;
 }
 
@@ -149,8 +164,6 @@ void svgString::operator+=(const float other)
 {
 	char* temp = ftos(other);
 	operator+=(temp);
-
-	delete[] temp;
 }
 
 char svgString::operator[](const unsigned int i) const
@@ -169,7 +182,7 @@ bool svgString::operator==(const char* str)
 
 svgString::~svgString()
 {
-	delete[] str;
+	free();
 }
 
 std::ostream& operator<<(std::ostream& os, const svgString& str)

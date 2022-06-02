@@ -91,11 +91,11 @@ bool Rectangle::ContainsPoint(const float x, const float y)
 	float y1 = p[0].GetY();
 	float y2 = p[0].GetY();
 
-	if (!((x >= x1 && x <= x2) || (x >= x2 && x <= x1)))
+	if (!((x >= x1 && x <= x2)))
 	{
 		return false;
 	}
-	if (!((y >= y1 && y <= y2) || (y >= y2 && y <= y1)))
+	if (!((y >= y1 && y <= y2)))
 	{
 		return false;
 	}
@@ -120,7 +120,7 @@ SVGElement* Rectangle::clone() const
 
 std::fstream& Rectangle::operator<<(std::fstream& st)
 {
-	st << "<line " << "x=\"" << p[0].GetX() << "\"" << " y=\"" << p[0].GetY() << "\""
+	st << "<rect " << "x=\"" << p[0].GetX() << "\"" << " y=\"" << p[0].GetY() << "\""
 		<< " width=\"" << width << "\"" << " height=\"" << height << "\""
 		<< " fill=\"" << fill << "\" />\n";
 

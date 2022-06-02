@@ -1,8 +1,12 @@
 #include <iostream>
-#include "Line.h"
-#include "Rectangle.h"
+#include "Editor.h"
 
 int main()
 {
-	SVGElement* pol = new Rectangle(1, 2, 3, 4, "Black");
+	Editor editor;
+	editor.Start();
+
+	/*char* t1 =  ftos(-1);
+
+	std::cout << t1;*/
 }

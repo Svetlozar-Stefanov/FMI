@@ -5,7 +5,7 @@
 
 void Editor::free()
 {
-	for (int i = 0; i < size; i++)
+	for (int i = 0; i < index; i++)
 	{
 		delete shapes[i];
 	}
@@ -48,6 +48,7 @@ svgString* Editor::parse(const char* str, const char d)
 		if (str[i] == d)
 		{
 			indx++;
+			continue;
 		}
 
 		info[indx] += str[i];
@@ -64,13 +65,13 @@ svgString Editor::getInfo(const char* str)
 	svgString out;
 	for (int i = 0; i < size; i++)
 	{
-		if (str[i] == '\"' && !started);
+		if (!started && (str[i] == 34))
 		{
 			started = true;
 			continue;
 		}
 
-		if (str[i] == '\"' && started);
+		if (str[i] == 34 && started)
 		{
 			started = false;
 			continue;
@@ -97,9 +98,19 @@ float Editor::stof(const svgString& str)
 			num += str[i] - '0';
 			num *= 10;
 		}
-		if (str[i] == ',')
+		if (str[i] == '.')
 		{
 			comma = i;
+		}
+	}
+	num /= 10;
+
+	if (str.GetLength() >= 1 && str[0] == '-')
+	{
+		num *= -1;
+		if (comma > 0)
+		{
+			comma--;
 		}
 	}
 
@@ -141,16 +152,22 @@ Editor::~Editor()
 
 void Editor::Start()
 {
+	std::cout << "open: ";
+	char path[1024];
+	std::cin.getline(path, 1024);
+	while (!Open(path))
+	{
+		std::cout << "Invalid path!\npath:";
+		std::cin.getline(path, 1024);
+	}
+
 	char input[1024];
+	std::cout << ">>";
 	std::cin.getline(input, 1024);
-	while (strcomp(input, "quit"))
+	while (!strcomp(input, "quit"))
 	{
 		svgString* info = parse(input, ' ');
-		if (info[0] == "open")
-		{
-			Open(info[1].GetRaw());
-		}
-		else if (info[0] == "create")
+		if (info[0] == "create")
 		{
 			if (info[1] == "line")
 			{
@@ -227,6 +244,10 @@ void Editor::Start()
 
 			PointIn(x, y);
 		}
+		else if (info[0] == "print")
+		{
+			Print();
+		}
 		else if (info[0] == "areas")
 		{
 			Areas();
@@ -235,19 +256,31 @@ void Editor::Start()
 		{
 			Pers();
 		}
+		else if (info[0] == "save")
+		{
+			if (!Save(info[1].GetRaw()))
+			{
+				std::cout << "Invalid path!\n";
+			}
+		}
 
 		delete[] info;
 
-		char input[1024];
+		std::cout << ">>";
 		std::cin.getline(input, 1024);
 	}
+
+	Save(path);
 }
 
 void Editor::Print() const
 {
 	for (int i = 0; i < index; i++)
 	{
-		std::cout << i << ". " << shapes[i]->GetInfo();
+		if (shapes[i] != nullptr)
+		{
+			std::cout << i + 1 << ". " << shapes[i]->GetInfo() << '\n';
+		}
 	}
 }
 
@@ -258,7 +291,7 @@ bool Editor::Create(const SVGElement& newEl)
 		resize();
 	}
 
-	shapes[index] = newEl.clone();
+	shapes[index++] = newEl.clone();
 
 	return true;
 }
@@ -280,7 +313,10 @@ bool Editor::Translate(const float horiz, const float vert)
 {
 	for (int i = 0; i < index; i++)
 	{
-		shapes[i]->Translate(horiz, vert);
+		if (shapes[i] != nullptr)
+		{
+			shapes[i]->Translate(horiz, vert);
+		}
 	}
 
 	return true;
@@ -292,17 +328,19 @@ bool Editor::Translate(const int i, const float horiz, const float vert)
 	{
 		return false;
 	}
-
-	shapes[i]->Translate(horiz, vert);
+	if (shapes[i] != nullptr)
+	{
+		shapes[i]->Translate(horiz, vert);
+	}
 }
 
 void Editor::IsWithin(const float x, const float y, const float width, const float height) const
 {
 	for (int i = 0; i < index; i++)
 	{
-		if (shapes[i]->IsWithinRegion(x, y, width, height))
+		if (shapes[i] != nullptr && shapes[i]->IsWithinRegion(x, y, width, height))
 		{
-			std::cout << "Shape N. " << i << " " << shapes[i]->GetInfo();
+			std::cout << "Shape No. " << i + 1 << " " << shapes[i]->GetInfo() << "\n";
 		}
 	}
 }
@@ -311,9 +349,9 @@ void Editor::IsWithin(const float x, const float y, const float r) const
 {
 	for (int i = 0; i < index; i++)
 	{
-		if (shapes[i]->IsWithinRegion(x, y, r))
+		if (shapes[i] != nullptr && shapes[i]->IsWithinRegion(x, y, r))
 		{
-			std::cout << "Shape N. " << i << " " << shapes[i]->GetInfo();
+			std::cout << "Shape No. " << i + 1 << " " << shapes[i]->GetInfo() << '\n';
 		}
 	}
 }
@@ -322,9 +360,9 @@ void Editor::PointIn(const float x, const float y) const
 {
 	for (int i = 0; i < index; i++)
 	{
-		if (shapes[i]->ContainsPoint(x, y))
+		if (shapes[i] != nullptr && shapes[i]->ContainsPoint(x, y))
 		{
-			std::cout << "Shape N. " << i << " " << shapes[i]->GetInfo();
+			std::cout << "Shape No. " << i + 1 << " " << shapes[i]->GetInfo() << '\n';
 		}
 	}
 }
@@ -333,7 +371,10 @@ void Editor::Areas() const
 {
 	for (int i = 0; i < index; i++)
 	{
-		std::cout << "Shape N. " << i << " " << shapes[i]->GetArea();
+		if (shapes[i] != nullptr)
+		{
+			std::cout << "Shape No. " << i + 1 << " " << shapes[i]->GetArea() << '\n';
+		}
 	}
 }
 
@@ -341,7 +382,10 @@ void Editor::Pers() const
 {
 	for (int i = 0; i < index; i++)
 	{
-		std::cout << "Shape N. " << i << " " << shapes[i]->GetPerimeter();
+		if (shapes[i] != nullptr)
+		{
+			std::cout << "Shape No. " << i + 1 << " " << shapes[i]->GetPerimeter() << '\n';
+		}
 	}
 }
 
@@ -385,7 +429,8 @@ bool Editor::Open(const char* fileName)
 			y2 = stof(temp);
 
 			file >> current;
-			fill = current;
+			temp = getInfo(current);
+			fill = temp;
 
 			Line line(x1, y1, x2, y2, fill);
 			Create(line);
@@ -413,7 +458,8 @@ bool Editor::Open(const char* fileName)
 			height = stof(temp);
 
 			file >> current;
-			fill = current;
+			temp = getInfo(current);
+			fill = temp;
 
 			Rectangle rect(x, y, width, height, fill);
 			Create(rect);
@@ -437,7 +483,8 @@ bool Editor::Open(const char* fileName)
 			r = stof(temp);
 
 			file >> current;
-			fill = current;
+			temp = getInfo(current);
+			fill = temp;
 
 			Circle circle(x, y, r, fill);
 			Create(circle);
@@ -456,9 +503,12 @@ bool Editor::Save(const char* fileName) const
 	file << "<svg>\n";
 	for (int i = 0; i < index; i++)
 	{
-		file << shapes[i];
+		if (shapes[i] != nullptr)
+		{
+			shapes[i]->operator<<(file);
+		}
 	}
 	file << "</svg>\n";
 
-	return false;
+	return true;
 }

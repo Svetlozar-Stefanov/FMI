@@ -31,6 +31,9 @@ public:
 	svgString& operator+(const char* other);
 	void operator+=(const char* other);
 
+	svgString& operator+(const char other);
+	void operator+=(const char other);
+
 	svgString& operator+(const int other);
 	void operator+=(const int other);
 

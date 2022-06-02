@@ -41,37 +41,37 @@ bool Circle::IsWithinRegion(const float rx, const float ry, const float width, c
 	float x = origin.GetX();
 	float y = origin.GetY();
 
-	if (!((x >= x1 && x <= x2) || (x >= x2 && x <= x1)))
+	if (!((x >= x1 && x <= x2)))
 	{
 		return false;
 	}
-	if (!((y >= y1 && y <= y2) || (y >= y2 && y <= y1)))
-	{
-		return false;
-	}
-
-	float dis1 = y1 - y;
-	if (dis1 > r)
-	{
-		return false;
-	}
-	float dis2 = y2 - y;
-	if (dis2 > r)
-	{
-		return false;
-	}
-	float dis3 = x1 - x;
-	if (dis3 > r)
-	{
-		return false;
-	}
-	float dis4 = x2 - x;
-	if (dis4 > r)
+	if (!((y >= y1 && y <= y2)))
 	{
 		return false;
 	}
 
-	return false;
+	float dis1 = abst(y1 - y);
+	if (dis1 < r)
+	{
+		return false;
+	}
+	float dis2 = abst(y2 - y);
+	if (dis2 < r)
+	{
+		return false;
+	}
+	float dis3 = abst(x1 - x);
+	if (dis3 < r)
+	{
+		return false;
+	}
+	float dis4 = abst(x2 - x);
+	if (dis4 < r)
+	{
+		return false;
+	}
+
+	return true;
 }
 
 bool Circle::IsWithinRegion(const float x, const float y, const float r)

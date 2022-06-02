@@ -44,20 +44,20 @@ bool Line::IsWithinRegion(const float x, const float y, const float width, const
 	int y1 = y;
 	int y2 = y + height;
 
-	if (!((a.GetX() >= x1 && a.GetX() <= x2) || (a.GetX() >= x2 && a.GetX() <= x1)))
+	if (!((a.GetX() >= x1 && a.GetX() <= x2)))
 	{
 		return false;
 	}
-	if (!((a.GetY() >= y1 && a.GetY() <= y2) || (a.GetY() >= y2 && a.GetY() <= y1)))
+	if (!((a.GetY() >= y1 && a.GetY() <= y2)))
 	{
 		return false;
 	}
 
-	if (!((b.GetX() >= x1 && b.GetX() <= x2) || (b.GetX() >= x2 && b.GetX() <= x1)))
+	if (!((b.GetX() >= x1 && b.GetX() <= x2)))
 	{
 		return false;
 	}
-	if (!((b.GetY() >= y1 && b.GetY() <= y2) || (b.GetY() >= y2 && b.GetY() <= y1)))
+	if (!((b.GetY() >= y1 && b.GetY() <= y2)))
 	{
 		return false;
 	}
@@ -81,7 +81,6 @@ bool Line::IsWithinRegion(const float x, const float y, const float r)
 
 	return true;
 }
-
 
 bool Line::ContainsPoint(const float x, const float y)
 {

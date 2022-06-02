@@ -44,7 +44,15 @@ char* itos(int n)
 {
 	int c = dCount(n);
 	char* num = new char[c+1];
-	for (int i = c - 1; i >= 0; i--)
+	int beg = 0;
+	if (n < 0)
+	{
+		c++;
+		num[beg] = '-';
+		beg++;
+		n = abst(n);
+	}
+	for (int i = c - 1; i >= beg; i--)
 	{
 		num[i] = n % 10 + '0';
 		n /= 10;
@@ -57,11 +65,11 @@ char* itos(int n)
 char* ftos(float n)
 {
 	int dC = 0;
-	float nc = n;
+	float nc = abst(n);
 	float rem = nc - (int)nc;
 	if (areEqual(rem, 0.0f))
 	{
-		return itos((int)nc);
+		return itos((int)n);
 	}
 	else
 	{
@@ -74,22 +82,31 @@ char* ftos(float n)
 	}
 
 	int c = dCount((int)nc);
+	int beg = 0;
 	if ((int)n == 0)
 	{
 		c++;
 	}
-
-	char* num = new char[c + 2];
-	for (int i = c; i >= 0; i--)
+	if (n < 0.0f)
 	{
-		if (i == 0 && (int)n == 0)
-		{
-			num[i] = '0';
-			continue;
-		}
+		c++;
+	}
+	char* num = new char[c + 2];
+	if (n < 0.0f)
+	{
+		num[beg++] = '-';
+		nc = abst(nc);
+	}
+	if ((int)n == 0)
+	{
+		num[beg++] = '0';
+	}
+	
+	for (int i = c; i >= beg; i--)
+	{
 		if (c - i == dC)
 		{
-			num[i] = ',';
+			num[i] = '.';
 			continue;
 		}
 		num[i] = (int)nc % 10 + '0';
