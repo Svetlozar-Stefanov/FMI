@@ -9,15 +9,8 @@ struct GymRat
 	int t;
 };
 
-const float eps = 0.00001f;
-
 vector<GymRat> boys;
 int indices[1000000] = { 0 };
-
-bool equal(float f1, float f2)
-{
-	return abs(f1 - f2) < eps;
-}
 
 bool isStronger(GymRat &g1, GymRat &g2) {
 	if (g1.d * g2.t > g2.d * g1.t)
@@ -93,13 +86,8 @@ int main()
 	quicksort(indices, N);
 
 	cout << '\n';
-	for (int i = N-1; i >= 0; i--)
+	for (int i = N - 1; i >= 0; i--)
 	{
 		cout << indices[i] + 1 << " " << (float)boys[indices[i]].d / boys[indices[i]].t << " " << boys[indices[i]].d << " " << boys[indices[i]].t << '\n';
 	}
-
-	/*for (int i = N - 1; i >= 0; i--)
-	{
-		cout << indices[i] + 1 << '\n';
-	}*/
 }
