@@ -1,61 +1,59 @@
 #include <iostream>
-#include <vector>
+#include <string>
 
-using namespace std;
+using std::cout;
+using std::cin;
+using std::string;
 
-struct Student {
-	unsigned score;
-	string name;
-};
+static int indices[1000000];
+static int scores[1000000];
+static string names[1000000];
 
-bool isHigherUp(const string& s1, const string& s2)
-{
-	uint64_t i1 = 0;
-	uint64_t i2 = 0;
-	while (i1 < s1.size() && i2 < s2.size())
+bool isLexicographicallyBigger(string& s1, string& s2) {
+	int i1 = 0;
+	int i2 = 0;
+	while (s1[i1] != '\0' && s2[i2] != '\0')
 	{
-		if (s1[i1] < s2[i2])
-		{
-			return true;
-		}
-		else if (s1[i1] > s2[i2])
-		{
+		if (s1[i1] > s2[i2]){
 			return false;
 		}
+		else if (s1[i1] < s2[i2]) {
+			return true;
+		}
+
 		i1++;
 		i2++;
 	}
 
-	if (i1 >= s1.size())
+	if (s1[i1] == '\0')
 	{
 		return true;
 	}
+
 	return false;
 }
 
-void swap(vector<Student>& arr, int i1, int i2)
+void swap(int * arr, int i1, int i2)
 {
-	Student temp = arr[i1];
+	int temp = arr[i1];
 	arr[i1] = arr[i2];
 	arr[i2] = temp;
 }
 
-int randomized_partition(vector<Student>& arr, int l, int r)
-{
-	int pI = rand() % (r + 1);
-	Student pivot = arr[pI];
 
-	swap(arr, pI, r);
+int partition(int* arr, int l, int r)
+{
+	int pivot = arr[r];
 
 	int s = l;
 	for (int i = l; i < r; i++)
 	{
-		if (arr[i].score > pivot.score)
+		if (scores[arr[i]] > scores[pivot])
 		{
 			swap(arr, s, i);
 			s++;
 		}
-		else if ((arr[i].score == pivot.score) && isHigherUp(arr[i].name, pivot.name))
+		if (scores[arr[i]] == scores[pivot] && isLexicographicallyBigger(names[arr[i]], names[pivot]))
 		{
 			swap(arr, s, i);
 			s++;
@@ -66,45 +64,44 @@ int randomized_partition(vector<Student>& arr, int l, int r)
 	return s;
 }
 
-void quicksortHelper(vector<Student>& arr, int l, int r) {
+void quicksortHelper(int * arr, int l, int r) {
 	if (l >= r)
 	{
 		return;
 	}
 
-	int m = randomized_partition(arr, l, r);
+	int m = partition(arr, l, r);
 
 	quicksortHelper(arr, l, m - 1);
 	quicksortHelper(arr, m + 1, r);
 }
 
-void quicksort(vector<Student>& arr) {
-	quicksortHelper(arr, 0, arr.size() - 1);
+void quicksort(int * arr, int size) {
+	quicksortHelper(arr, 0, size - 1);
 }
 
 int main()
 {
-	ios_base::sync_with_stdio(false);
+	std::ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
 
 	int N;
 	cin >> N;
 
-	vector<Student> students(N);
-
 	for (int i = 0; i < N; i++)
 	{
-		cin >> students[i].name;
+		cin >> names[i];
+		indices[i] = i;
 	}
 	for (int i = 0; i < N; i++)
 	{
-		cin >> students[i].score;
+		cin >> scores[i];
 	}
 
-	quicksort(students);
+	quicksort(indices, N);
 
 	for (int i = 0; i < N; i++)
 	{
-		cout << students[i].name << " " << students[i].score << '\n';
+		cout << names[indices[i]] << " " << scores[indices[i]] << '\n';
 	}
 }
