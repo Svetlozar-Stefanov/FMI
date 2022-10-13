@@ -3,80 +3,60 @@
 
 using namespace std;
 
-const int pow(int a, int n) {
-	if (n <= 0)
+int64_t findClosestPerfectCube(vector<int64_t> &arr, int64_t num, int l, int r) {
+	if (r - l <= 1)
 	{
-		return 1;
-	}
-	
-	return a * pow(a, n - 1);
-}
-
-vector<unsigned long long> squares;
-vector<unsigned long long> initial;
-
-const uint64_t top = pow(10, 18) * 8;
-
-int main()
-{
-	unsigned long long points = 0;
-	cin >> points;
-
-	/*initial.push_back(2);
-	initial.push_back(3);
-	squares.push_back(1);
-	int index = 0;
-	int n = 3;
-	while (squares[squares.size() - 1] < top)
-	{
-		if (pow(initial[index], 3) < pow(initial[index + 1], 3))
+		if (arr[r] <= num)
 		{
-			initial[index] = pow(initial[index], 3);
-			squares.push_back(initial[index]);
+			return arr[r];
 		}
 		else
 		{
-			index++;
-			n++;
-			initial.push_back(n);
+			return arr[l];
 		}
-	}*/
+	}
 
-	/*for (int i = 0; i < squares.size(); i++)
+	int middle = l + (r - l) / 2;
+	if (num > arr[middle])
 	{
-		cout << squares[i] << '\n';
-	}*/
-
-	/*int count = 0;
-	int last = squares.size() - 1;
-	while (points > 0)
+		return findClosestPerfectCube(arr, num, middle, r);
+	}
+	else if(num < arr[middle])
 	{
-		for (int64_t i = last; i >= 0; i--)
-		{
-			if (squares[i] <= points)
-			{
-				points -= squares[i];
-				cout << points << ' ' << squares[i] << '\n';
-				count++;
-				last = i;
-				break;
-			}
-		}
+		return findClosestPerfectCube(arr, num, l, middle);
+	}
 
-		if (points < 8)
-		{
-			count += points;
-			break;
-		}
-	}*/
+	return arr[middle];
+}
 
-	points = top;
+int main()
+{
+	int64_t points = 0;
+	cin >> points;
 
 	int count = 0;
 
+	vector<int64_t> perfectCubes;
+	for (int64_t i = 1; i <= points; i++)
+	{
+		if (i * i * i > points)
+		{
+			break;
+		}
+		perfectCubes.push_back(i * i * i);
+	}
+
+	points -= perfectCubes.back();
+	cout << perfectCubes.back() << "\n";
+	cout << points << "\n";
+	count++;
+
 	while (points > 0)
 	{
-		points -= pow((int)cbrt(points), 3);
+		uint64_t cube = findClosestPerfectCube(perfectCubes, points, 0, perfectCubes.size() - 1);
+		cout << cube << "\n";
+		points -= cube;
+		cout << points << "\n";
 		count++;
 	}
 
