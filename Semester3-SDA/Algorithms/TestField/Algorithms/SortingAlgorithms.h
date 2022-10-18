@@ -12,16 +12,48 @@ void insertionSort(vector<int> &arr) {
 	{
 		int key = arr[i];
 		int j = i - 1;
-		while (j > 0 && arr[j] > key)
+		while (j >= 0 && arr[j] > key)
 		{
 			swap(arr, j, j+1);
 			j--;
 		}
-		arr[j] = key;
+		arr[j+1] = key;
 	}
 }
 
 //Merge Sort
+void special_merge(vector<int>& arr, int l, int m, int r) {
+	vector<int> A;
+	for (int i = l; i <= m; i++)
+	{
+		A.push_back(arr[i]);
+	}
+	A.push_back(INT_MAX);
+
+	vector<int> B;
+	for (int i = m + 1; i <= r; i++)
+	{
+		B.push_back(arr[i]);
+	}
+	B.push_back(INT_MAX);
+
+	uint64_t iA = 0;
+	uint64_t iB = 0;
+	uint64_t i = l;
+
+	for (int i = 0; i < r-l+1; i++)
+	{
+		if (A[iA] <= B[iB])
+		{
+			arr[i++] = A[iA++];
+		}
+		else
+		{
+			arr[i++] = B[iB++];
+		}
+	}
+}
+
 void merge(vector<int>& arr, int l, int m, int r) {
 	vector<int> A;
 	for (int i = l; i <= m; i++)
@@ -35,9 +67,9 @@ void merge(vector<int>& arr, int l, int m, int r) {
 		B.push_back(arr[i]);
 	}
 
-	int iA = 0;
-	int iB = 0;
-	int i = l;
+	uint64_t iA = 0;
+	uint64_t iB = 0;
+	uint64_t i = l;
 
 	while (iA < A.size() && iB < B.size())
 	{
@@ -81,26 +113,6 @@ void mergeSort(vector<int> &arr) {
 }
 
 //Quicksort
-int randomized_partition(vector<int>& arr, int l, int r)
-{
-	int pI = rand() % (r+1);
-	int pivot = arr[pI];
-
-	swap(arr, pI, r);
-
-	int s = l;
-	for (int i = l; i < r; i++)
-	{
-		if (arr[i] <= pivot)
-		{
-			swap(arr, s, i);
-			s++;
-		}
-	}
-	swap(arr, s, r);
-
-	return s;
-}
 
 int partition(vector<int>& arr, int l, int r) 
 {
@@ -120,13 +132,21 @@ int partition(vector<int>& arr, int l, int r)
 	return s;
 }
 
+int randomized_partition(vector<int>& arr, int l, int r)
+{
+	srand(NULL);
+	int pI = rand() % (r - l) + l;
+	swap(arr, pI, r);
+	return partition(arr, l, r);
+}
+
 void quicksortHelper(vector<int> &arr, int l, int r) {
 	if (l >= r)
 	{
 		return;
 	}
 
-	int m = partition(arr, l, r);
+	int m = randomized_partition(arr, l, r);
 
 	quicksortHelper(arr, l , m-1);
 	quicksortHelper(arr, m + 1, r);
@@ -147,12 +167,12 @@ void countingSort(vector<int>& arr) {
 		count[i] = 0;
 	}
 
-	for (int i = 0; i < arr.size(); i++)
+	for (uint64_t i = 0; i < arr.size(); i++)
 	{
 		count[arr[i]]++;
 	}
 
-	for (int i = 1; i < top-1; i++)
+	for (int i = 1; i < top; i++)
 	{
 		count[i] += count[i - 1];
 	}
@@ -176,7 +196,7 @@ void radixHelper(vector<int>& arr, int place) {
 		count[i] = 0;
 	}
 
-	for (int i = 0; i < arr.size(); i++)
+	for (uint64_t i = 0; i < arr.size(); i++)
 	{
 		count[(arr[i] / place) % 10]++;
 	}

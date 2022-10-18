@@ -4,6 +4,11 @@
 
 using namespace std;
 
+struct Query {
+    int64_t S;
+    int64_t P;
+};
+
 int findClosestIndex(vector<int64_t>& arr, int64_t n, int l, int r) 
 {
     if (r - l <= 1)
@@ -50,20 +55,22 @@ int main()
         cin >> numbers[i];
     }
 
-    sort(numbers.begin(), numbers.end());
-
-    for (int i = 0; i < N; i++)
+    vector<Query> queries(Q);
+    for (int i = 0; i < Q; i++)
     {
-        cout << numbers[i] << " ";
+        cin >> queries[i].S;
+        cin >> queries[i].P;
     }
+
+    sort(numbers.begin(), numbers.end());
 
     for (int i = 0; i < Q; i++)
     {
         uint64_t S, P;
-        cin >> S;
-        cin >> P;
+        S = queries[i].S;
+        P = queries[i].P;
 
-        int index = findClosestIndex(numbers, P, 0, numbers.size() - 1);
+        int index = findClosestIndex(numbers, P, 0, N - 1);
         int counter = 0;
         uint64_t sum = 0;
         for (int i = index; i >= 0; i--)
@@ -75,7 +82,6 @@ int main()
             }
             counter++;
         }
-
         printf("%i\n", counter);
     }
 }

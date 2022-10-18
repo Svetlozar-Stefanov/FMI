@@ -12,7 +12,7 @@ void swap(vector<int>& arr, int i1, int i2)
 
 int max(vector<int> &arr) {
 	int max = INT_MIN;
-	for (int i = 0; i < arr.size(); i++)
+	for (uint64_t i = 0; i < arr.size(); i++)
 	{
 		if (max < arr[i])
 		{
