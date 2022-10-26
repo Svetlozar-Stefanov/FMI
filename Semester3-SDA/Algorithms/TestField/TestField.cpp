@@ -12,6 +12,12 @@ void print_arr(vector<int> &arr) {
 	cout << '\n';
 }
 
+typedef struct {
+	unsigned int  age : 4;
+	unsigned char gender : 1;
+	unsigned int  size : 2;
+}child_t;
+
 int main()
 {
     //vector<int> arr = { 5, -3, 4, -5, 2, 1, -4, 0, 3, -2, -1 };
@@ -28,4 +34,6 @@ int main()
 	list.reverse_list();
 
 	list.print();
+
+	cout << sizeof(child_t);
 }
