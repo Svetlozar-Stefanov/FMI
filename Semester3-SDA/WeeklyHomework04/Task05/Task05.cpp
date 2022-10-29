@@ -1,7 +1,9 @@
 #include <iostream>
+#include <vector>
+#include <algorithm>
 using namespace std;
 
-int counter[50001] = { 0 };
+const int MAX_BALL_NUMBER = 200001;
 
 struct Ball
 {
@@ -28,28 +30,28 @@ struct Ball
 class ZumaLine
 {
 public:
-	ZumaLine(int* counter) {
+	ZumaLine(int size) {
+		unusedIndices.push_back(size);
 		head = nullptr;
 		tail = nullptr;
-		this->counter = counter;
 	}
 
 private:
-	int* counter;
+	vector<int> unusedIndices;
+	Ball* ballIndices[MAX_BALL_NUMBER] = { nullptr };
 	Ball* head;
 	Ball* tail;
 
 	int getSmallestIndex() {
-		for (int i = 0; i < 50001; i++)
+		int index = 0;
+		index = unusedIndices[0];
+		unusedIndices.pop_back();
+		if (unusedIndices.size() == 0)
 		{
-			if (counter[i] <= 0)
-			{
-				counter[i]++;
-				return i;
-			}
+			unusedIndices.push_back(index + 1);
 		}
 
-		return -1;
+		return index;
 	}
 
 public:
@@ -58,26 +60,38 @@ public:
 	}
 
 	void push_back(int color, int index) {
-		counter[index]++;
 		if (head == tail && head == nullptr)
 		{
 			tail = new Ball(color, index);
 			head = tail;
+			ballIndices[index] = tail;
 			return;
 		}
 
 		tail->next = new Ball(color, index, tail, nullptr);
+		ballIndices[index] = tail->next;
 		tail = tail->next;
 	}
 
 	int calcPoints(Ball* ball) {
+		Ball* toBringBack[3];
 		int count = 1;
+		int i = 0;
+		toBringBack[i++] = ball;
+		ballIndices[ball->index] = nullptr;
+		unusedIndices.push_back(ball->index);
 
 		int col = ball->color;
 		Ball* leftIter = ball->previous;
 		while (leftIter != nullptr && leftIter->color == col)
 		{
 			count++;
+			if (i < 3)
+			{
+				toBringBack[i++] = leftIter;
+			}
+			ballIndices[leftIter->index] = nullptr;
+			unusedIndices.push_back(leftIter->index);
 			leftIter = leftIter->previous;
 		}
 
@@ -85,12 +99,26 @@ public:
 		while (rightIter != nullptr && rightIter->color == col)
 		{
 			count++;
+			if (i < 3)
+			{
+				toBringBack[i++] = rightIter;
+			}
+			ballIndices[rightIter->index] = nullptr;
+			unusedIndices.push_back(rightIter->index);
 			rightIter = rightIter->next;
 		}
+
 		if (count < 3)
 		{
+			for (int j = 0; j < i; j++)
+			{
+				unusedIndices.pop_back();
+				Ball* ball = toBringBack[j];
+				ballIndices[ball->index] = ball;
+			}
 			return 0;
 		}
+		sort(unusedIndices.rbegin(), unusedIndices.rend());
 
 		Ball* iter = leftIter;
 		if (iter == nullptr)
@@ -99,12 +127,6 @@ public:
 		}
 		else
 		{
-			iter = iter->next;
-		}
-
-		while (iter != rightIter)
-		{
-			counter[iter->index]--;
 			iter = iter->next;
 		}
 
@@ -144,26 +166,12 @@ public:
 			return;
 		}
 
-		Ball* shot = new Ball(col, getSmallestIndex());
-		/*if (pos == 0)
-		{
-			shot->next = head;
-			head = shot;
-			return;
-		}*/
+		int index = getSmallestIndex();
+		Ball* shot = new Ball(col, index);
+		ballIndices[index] = shot;
 
-		Ball* prev = nullptr;
-		Ball* curr = head;
-		while (curr != nullptr && curr->index != pos)
-		{
-			prev = curr;
-			curr = curr->next;
-		}
-		if (curr != nullptr)
-		{
-			prev = curr;
-			curr = curr->next;
-		}
+		Ball* prev = ballIndices[pos];
+		Ball* curr = prev->next;
 
 		if (prev != nullptr)
 		{
@@ -189,14 +197,11 @@ public:
 		while (iter != nullptr)
 		{
 			printf("%d ", iter->color);
-			//cout << iter->color << /*'-' << iter->index <<*/ ' ';
 			iter = iter->next;
 		}
 		printf("\n");
 	}
 };
-
-ZumaLine line(counter);
 
 int main()
 {
@@ -205,13 +210,15 @@ int main()
 
 	int N;
 	cin >> N;
-	
+	ZumaLine line(N);
+
 	for (int i = 0; i < N; i++)
 	{
 		int n;
 		cin >> n;
 		line.push_back(n, i);
 	}
+
 	int Q;
 	cin >> Q;
 	for (int i = 0; i < Q; i++)
@@ -220,8 +227,8 @@ int main()
 		cin >> pos >> col;
 
 		line.shootAtBall(pos, col);
-		//line.print();
 	}
+
 	if (!line.isEmpty())
 	{
 		line.print();
