@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <queue>
+#include <stack>
 #include <climits>
 
 using namespace std;
@@ -132,8 +133,7 @@ public:
     }
 };
 
-int main()
-{
+void Ver02() {
     ios::sync_with_stdio(false);
     cin.tie(NULL);
 
@@ -148,4 +148,51 @@ int main()
     }
 
     cout << arr.eliminate();
+}
+
+void Ver03() {
+    ios::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int N;
+    cin >> N;
+    vector<int> arr(N);
+    for (int i = 0; i < N; i++)
+    {
+        cin >> arr[i];
+    }
+
+    int max = INT_MIN;
+    stack<pair<int,int>> survivors;
+    for (int i = N-1; i >= 0; i--)
+    {
+        int player = arr[i];
+        int counter = 0;
+        while (survivors.size() > 0 && player < survivors.top().first)
+        {
+            int t = survivors.top().second;
+            survivors.pop();
+            if (counter < t)
+            {
+                counter = t+counter;
+            }
+            else
+            {
+                counter++;
+            }
+        }
+
+        survivors.push(pair<int, int>(player, counter));
+        if (counter > max)
+        {
+            max = counter;
+        }
+    }
+
+    cout << max;
+}
+
+int main()
+{
+    Ver03();
 }
