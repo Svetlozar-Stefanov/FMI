@@ -192,7 +192,52 @@ void Ver03() {
     cout << max;
 }
 
+void Ver04() 
+{
+    ios::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int N;
+    cin >> N;
+    vector<int> arr(N);
+    for (int i = 0; i < N; i++)
+    {
+        cin >> arr[i];
+    }
+
+    int max = INT_MIN;
+    stack<pair<int, int>> survivors;
+    for (int i = N - 1; i >= 0; i--)
+    {
+        pair<int, int> survivor = pair<int, int>(arr[i], 0);
+
+        while (survivors.size() > 0 
+            && survivor.first < survivors.top().first)
+        {
+            if (survivor.second < survivors.top().second)
+            {
+                survivor.second = survivors.top().second;
+            }
+            else
+            {
+                survivor.second++;
+            }
+
+            survivors.pop();
+        }
+
+        if (survivor.second > max)
+        {
+            max = survivor.second;
+        }
+
+        survivors.push(survivor);
+    }
+
+    cout << max;
+}
+
 int main()
 {
-    Ver03();
+    Ver04();
 }
