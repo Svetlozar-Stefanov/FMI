@@ -140,3 +140,55 @@ int quickselectNthNum(vector<int>& arr, int n)
 {
 	return quickselectNthNumHelper(arr, n-1, 0, arr.size()-1);
 }
+
+int upper_bound(vector<int>& arr, int l, int r, int x)
+{
+	if (r - l <= 1)
+	{
+		if (arr[l] == x)
+		{
+			return l;
+		}
+		return r;
+	}
+
+	int m = l + (r - l) / 2;
+
+	if (arr[m] > x)
+	{
+		return upper_bound(arr, l, m, x);
+	}
+	else if (arr[m] <= x) {
+		return upper_bound(arr, m+1, r, x);
+	}
+}
+
+int longestIncreasingSubsequence(vector<int> &arr) 
+{
+	if (arr.size() <= 0)
+	{
+		return -1;
+	}
+
+	vector<int> ends;
+	ends.push_back(arr[0]);
+
+	for (int i = 1; i < arr.size(); i++)
+	{
+		if (arr[i] < ends[0])
+		{
+			ends[0] = arr[i];
+		}
+		else if (arr[i] > ends[ends.size()-1])
+		{
+			ends.push_back(arr[i]);
+		}
+		else
+		{
+			int idx = upper_bound(ends, 0, ends.size() - 1, arr[i]);
+			ends[idx] = arr[i];
+		}
+	}
+
+	return ends.size();
+}
