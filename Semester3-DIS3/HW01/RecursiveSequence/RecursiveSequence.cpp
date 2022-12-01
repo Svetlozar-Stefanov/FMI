@@ -31,28 +31,33 @@ void menu() {
     {
         if (c == 'p')
         {
+            std::cout << "Please enter p: ";
             std::cin >> p;
-
-            std::cout << "Limit: ";
-            if (p < -4)
-            {
-                std::cout << "-inf\n";
-            }
-            else if (equal(p, -4))
+            while (equal(p, -4))
             {
                 std::cout << "Invalid p\n";
-                return;
+                std::cout << "Please enter valid p: ";
+                std::cin >> p;
+            }
+
+            if (p < -4)
+            {
+                std::cout << "Limit: ";
+                std::cout << "-inf\n";
             }
             else if (-4 < p && p < 0)
             {
+                std::cout << "Limit: ";
                 std::cout << "+inf\n";
             }
             else if (0 <= p && p <= 2)
             {
+                std::cout << "Limit: ";
                 std::cout << "2\n";
             }
             else if (p > 2)
             {
+                std::cout << "Limit: ";
                 std::cout << "+inf\n";
             }
         }
@@ -105,7 +110,6 @@ int main()
 {
     std::cout << "We are given a sequence {an}, where an+1 = F(an) and a1 = p for each natural n\n";
     std::cout << "F(x) = (3x ^ 2 - 4x + 8) / x + 4\n";
-    std::cout << "Please enter p: ";
     
     menu();
 }
