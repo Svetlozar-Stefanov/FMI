@@ -8,7 +8,7 @@
 #include <climits>
 using namespace std;
 
-void get_min_dist(int s, vector<list<pair<int, int>>>& graph, vector<int>& min_dist)
+void get_min_dist(int s, vector<list<pair<int, int>>>& graph, vector<uint64_t>& min_dist)
 {
     priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> min;
 
@@ -36,29 +36,27 @@ void get_min_dist(int s, vector<list<pair<int, int>>>& graph, vector<int>& min_d
 }
 
 void dfs(int v, int e,
-    vector<list<pair<int, int>>>& graph, 
-    vector<int> &min_dist, int prev_min,
-    vector<bool>& visited, int& counter)
+    vector<list<pair<int, int>>>& graph,
+    vector<uint64_t>& min_dist,
+    vector<bool>& visited, vector<int>& connected)
 {
-    if (prev_min <= min_dist[v])
+    if (connected[v] != 0)
     {
-        return;
-    }
-    if (v == e)
-    {
-        counter++;
         return;
     }
     visited[v] = true;
 
     for (auto i = graph[v].begin(); i != graph[v].end(); i++)
     {
-        if (!visited[(*i).first])
+        if (!visited[(*i).first] && min_dist[v] > min_dist[(*i).first])
         {
-            dfs((*i).first, e, graph, min_dist, min_dist[v], visited, counter);
+            dfs((*i).first, e, graph, min_dist, visited, connected);
+            if (connected[(*i).first] != 0)
+            {
+                (connected[v] += connected[(*i).first]) %= 1000000007;
+            }
         }
     }
-
     visited[v] = false;
 }
 
@@ -77,11 +75,12 @@ int main() {
         graph[v2].push_back(pair<int, int>(v1, w));
     }
 
-    vector<int> min_dist(V);
+    vector<uint64_t> min_dist(V);
     get_min_dist(e, graph, min_dist);
 
     vector<bool> visited(V);
-    int counter = 0;
-    dfs(s, e, graph, min_dist, INT_MAX, visited, counter);
-    cout << counter;
+    vector<int> connected(V);
+    connected[e] = 1;
+    dfs(s, e, graph, min_dist, visited, connected);
+    cout << connected[s];
 }
