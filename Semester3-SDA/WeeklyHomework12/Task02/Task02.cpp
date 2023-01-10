@@ -9,8 +9,8 @@ struct Path
 {
     int from;
     int to;
-    int work;
-    int profit;
+    int64_t work;
+    int64_t profit;
     int idx;
 
     Path()
@@ -22,7 +22,7 @@ struct Path
         this->idx = 0;
     }
 
-    Path(int from, int to, int work, int profit, int idx)
+    Path(int from, int to, int64_t work, int64_t profit, int idx)
     {
         this->from = from;
         this->to = to;
@@ -34,7 +34,7 @@ struct Path
 
 bool comparator(Path& p1, Path& p2)
 {
-    return (p1.work < p2.work) || (p1.work == p2.work && (p1.work * p1.profit) > (p2.work * p2.profit));
+    return (p1.work < p2.work) || (p1.work == p2.work && p1.profit >= p2.profit);
 }
 
 int findRoot(int node, vector<int>& connected) {
@@ -58,16 +58,12 @@ void getMST(vector<Path> &edges, int N)
     for (int i = 0; i < edges.size(); i++)
     {
         Path path = edges[i];
-        if (connected[path.from] != connected[path.to])
+        int fromRoot = findRoot(path.from, connected);
+        int toRoot = findRoot(path.to, connected);
+        if (fromRoot != toRoot)
         {  
             cout << path.idx << '\n';
-            for (int i = 0; i < connected.size(); i++)
-            {
-                if (connected[i] == connected[path.to])
-                {
-                    connected[i] = connected[path.from];
-                }
-            }
+            connected[fromRoot] = toRoot;
         }
     }
 }
