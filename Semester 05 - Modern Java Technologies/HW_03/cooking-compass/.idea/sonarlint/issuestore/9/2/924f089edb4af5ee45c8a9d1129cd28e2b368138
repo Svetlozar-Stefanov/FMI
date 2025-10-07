@@ -1,0 +1,7 @@
+
+7
+java:S1220""Move this file to a named package.8â„“Ñ1
+L	java:S106-"+Replace this use of System.out by a logger.(Û…ùâÿÿÿÿÿ8ô„“Ñ1
+L	java:S106/"+Replace this use of System.out by a logger.(Ä¿¼ùùÿÿÿÿ8ì–Ñ1
+U
+java:S1128"8Remove this unused import 'com.google.gson.JsonElement'.(ğ†˜³8ïë–Ñ1

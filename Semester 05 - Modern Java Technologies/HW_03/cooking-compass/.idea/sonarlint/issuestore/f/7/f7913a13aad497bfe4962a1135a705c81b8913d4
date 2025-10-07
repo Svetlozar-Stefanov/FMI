@@ -1,0 +1,12 @@
+
+g	java:S112A"FDefine and throw a dedicated exception instead of using a generic one.(Ü¡ıúúÿÿÿÿ8Û¸Ñ1
+V
+java:S1172"4Remove this unused method parameter "applicationId".(ë´ı†ÿÿÿÿÿ8¼Û¸Ñ1
+`
+java:S1854?">Remove this useless assignment to local variable "requestUri".(Ë‘øçşÿÿÿÿ8ÉÛ¸Ñ1
+L
+java:S1481="/Remove this unused "requestUri" local variable.(ˆ—„İ8ÍÛ¸Ñ1
+L
+java:S1068"*Remove this unused "apiKey" private field.(¬Ñ„—úÿÿÿÿ8ØÛ¸Ñ1
+M
+java:S1068"1Remove this unused "applicationId" private field.(–ôğl8ÚÛ¸Ñ1

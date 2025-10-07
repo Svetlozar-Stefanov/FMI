@@ -1,0 +1,43 @@
+<!ELEMENT MovieCollection (artists, genres, movies)>
+<!ELEMENT artists (artist+)>
+<!ELEMENT artist (name)>
+<!ATTLIST artist id ID #REQUIRED directed IDREFS #IMPLIED acted_in IDREFS #IMPLIED>
+<!ELEMENT name (#PCDATA)>
+
+<!ELEMENT genres (genre+)>
+<!ELEMENT genre (#PCDATA)>
+<!ATTLIST genre id ID #REQUIRED>
+
+<!ELEMENT movies (movie+)>
+<!ELEMENT movie (
+    title, poster, year, age_restriction,
+    length, rating, description, 
+    budget, gross_worldwide
+    )>
+<!ATTLIST movie 
+    id ID #REQUIRED
+    director IDREF #REQUIRED
+    stars IDREFS #REQUIRED
+    genres IDREFS #IMPLIED>
+<!ELEMENT title (#PCDATA)>
+<!ELEMENT poster EMPTY>
+<!ATTLIST poster image ENTITY #REQUIRED>
+<!ELEMENT year (#PCDATA)>
+<!ELEMENT age_restriction (#PCDATA)>
+<!ELEMENT length (#PCDATA)>
+<!ELEMENT rating (#PCDATA)>
+<!ELEMENT description (#PCDATA)>
+<!ELEMENT budget (#PCDATA)>
+<!ELEMENT gross_worldwide (#PCDATA)>
+
+<!NOTATION JPG SYSTEM "image/jpg">
+<!ENTITY pulp_fiction SYSTEM "resources/Pulp-Fiction.jpg" NDATA JPG>
+<!ENTITY blade_runner SYSTEM "resources/Blade-Runner.jpg" NDATA JPG>
+<!ENTITY the_green_mile SYSTEM "resources/The-Green-Mile.jpg" NDATA JPG>
+<!ENTITY mr_nobody SYSTEM "resources/Mr-Nobody.jpg" NDATA JPG>
+<!ENTITY eternal_sunshine SYSTEM "resources/Eternal-Sunshine.jpg" NDATA JPG>
+<!ENTITY oldboy SYSTEM "resources/Oldboy.jpg" NDATA JPG>
+<!ENTITY a_clockwork_orange SYSTEM "resources/A-Clockwork-Orange.jpg" NDATA JPG>
+<!ENTITY lost_in_translation SYSTEM "resources/Lost-In-Translation.jpg" NDATA JPG>
+<!ENTITY interstellar SYSTEM "resources/Interstellar.jpg" NDATA JPG>
+<!ENTITY django_unchained SYSTEM "resources/Django-Unchained.jpg" NDATA JPG>
